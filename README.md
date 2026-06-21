@@ -22,7 +22,7 @@ Bistable diaphragms have previously been studied with magnetic and spring coupli
      pasting it into the code block underneath.
 ==================================================================== -->
 
-![Schematic of the bistable diaphragm metafluid](figures/schematic.png)
+![Schematic of the bistable diaphragm metafluid](figures/figure.png)
 
 *Bistable diaphragms (blue) placed at regular intervals along a fluid-filled pipe. Each diaphragm is in one of two stable states (curved left or right). The compressible fluid trapped between adjacent diaphragms exerts pressure `p_n` on both bounding diaphragms. A transition wave propagates to the right, switching each diaphragm from one stable state to the other.*
 

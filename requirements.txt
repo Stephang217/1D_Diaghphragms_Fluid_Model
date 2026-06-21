@@ -1,0 +1,7 @@
+numpy
+scipy
+matplotlib
+jupyter
+
+# Optional (stretch goal: surrogate / SciML modelling)
+# scikit-learn

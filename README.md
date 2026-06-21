@@ -6,21 +6,11 @@ Continuum and reduced-order modelling of transition waves in a fluid-coupled bis
 
 A meta-fluid is a fluid whose macroscopic properties can be tuned by engineering its microstructure. This project studies a one-dimensional array of bistable diaphragms placed at regular intervals along a fluid-filled pipe. Each diaphragm sits in one of two stable states and is coupled to its neighbours through the pressure of the compressible fluid trapped in the segments between them. The discrete model tracks the displacement `u_n(t)` of each diaphragm `n`.
 
-The key behaviour is the **transition wave**: a localised front that propagates through the bistable elements, irreversibly switching each one from one stable state to the other while releasing or absorbing energy. Characterising when this wave propagates and how fast is the foundational question for applications in energy harvesting and storage, refrigerant-free refrigeration, mechanical signal processing, and tunable acoustic devices.
+The key behaviour is the transition wave: a localised front that propagates through the bistable elements, irreversibly switching each one from one stable state to the other while releasing or absorbing energy. Characterising when this wave propagates and how fast is the foundational question for applications in energy harvesting and storage, refrigerant-free refrigeration, mechanical signal processing, and tunable acoustic devices.
 
-Bistable diaphragms have previously been studied with magnetic and spring coupling, but not with fluid coupling. **Fluid coupling is the novel contribution here**: it is what turns the array into a metafluid. The approach is to start from the discrete lattice model, take its continuum limit, and — where that limit is valid — derive a reduced-order continuum model via asymptotics. This introductory project is restricted to 1D; the broader PhD extends it to 2D and 3D.
+Bistable diaphragms have previously been studied with magnetic and spring coupling, but not with fluid coupling. Fluid coupling is the novel contribution here: it is what turns the array into a metafluid. The approach is to start from the discrete lattice model, take its continuum limit, and — where that limit is valid — derive a reduced-order continuum model via asymptotics. This introductory project is restricted to 1D; the broader PhD extends it to 2D and 3D.
 
 ## Schematic
-
-<!-- ===================================================================
-     PASTE YOUR FIGURE HERE.
-
-     Option A (recommended for GitHub): compile your TikZ to PNG/SVG,
-     drop the file in figures/, and use the image line below.
-
-     Option B: keep the LaTeX source in the repo for reference by
-     pasting it into the code block underneath.
-==================================================================== -->
 
 ![Schematic of the bistable diaphragm metafluid](figures/figure.png)
 
@@ -30,7 +20,69 @@ Bistable diaphragms have previously been studied with magnetic and spring coupli
 <summary>LaTeX / TikZ source for the figure</summary>
 
 ```latex
-% PASTE YOUR LATEX CODE HERE
+\documentclass[border=2pt]{standalone}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{tikz}
+\usepackage{xcolor}
+\definecolor{wongblue}{RGB}{0, 114, 178}
+\definecolor{wongorange}{RGB}{230, 159, 0}
+\definecolor{wonggrey}{RGB}{100, 100, 100}
+
+\begin{document}
+
+\begin{tikzpicture}[scale=1]
+    % pipe walls
+    \draw[thick] (0, 1.5) -- (12, 1.5);
+    \draw[thick] (0, -1.5) -- (12, -1.5);
+    
+    % diaphragms - some bent right (behind wave, snapped), some bent left (ahead of wave)
+    % "snapped" diaphragms behind the wave: bent right (curve opens left)
+    \draw[thick, wongblue] (1, -1.5) .. controls (1.5, -0.5) and (1.5, 0.5) .. (1, 1.5);
+    \draw[thick, wongblue] (3, -1.5) .. controls (3.5, -0.5) and (3.5, 0.5) .. (3, 1.5);
+    \draw[thick, wongblue] (5, -1.5) .. controls (5.5, -0.5) and (5.5, 0.5) .. (5, 1.5);
+    
+    % "unsnapped" diaphragms ahead of the wave: bent left (curve opens right)
+    \draw[thick, wongblue] (7, -1.5) .. controls (6.5, -0.5) and (6.5, 0.5) .. (7, 1.5);
+    \draw[thick, wongblue] (9, -1.5) .. controls (8.5, -0.5) and (8.5, 0.5) .. (9, 1.5);
+    \draw[thick, wongblue] (11, -1.5) .. controls (10.5, -0.5) and (10.5, 0.5) .. (11, 1.5);
+    
+    % diaphragm labels (under)
+    \node at (1, -1.9) {\small $n-2$};
+    \node at (3, -1.9) {\small $n-1$};
+    \node at (5, -1.9) {\small $n$};
+    \node at (7, -1.9) {\small $n+1$};
+    \node at (9, -1.9) {\small $n+2$};
+    \node at (11, -1.9) {\small $n+3$};
+    
+    % pressure labels with arrows pointing into the segments
+    \node at (2, 0) {$p_{n-1}$};
+    \draw[->, thick, wonggrey] (1.7, 0.3) -- (1.3, 0.3);
+    \draw[->, thick, wonggrey] (2.3, 0.3) -- (2.7, 0.3);
+    
+    \node at (4, 0) {$p_n$};
+    \draw[->, thick, wonggrey] (3.7, 0.3) -- (3.3, 0.3);
+    \draw[->, thick, wonggrey] (4.3, 0.3) -- (4.7, 0.3);
+    
+    \node at (6, 0) {$p_{n+1}$};
+    \draw[->, thick, wonggrey] (5.7, 0.3) -- (5.3, 0.3);
+    \draw[->, thick, wonggrey] (6.3, 0.3) -- (6.7, 0.3);
+    
+    \node at (8, 0) {$p_{n+2}$};
+    \draw[->, thick, wonggrey] (7.7, 0.3) -- (7.3, 0.3);
+    \draw[->, thick, wonggrey] (8.3, 0.3) -- (8.7, 0.3);
+    
+    \node at (10, 0) {$p_{n+3}$};
+    \draw[->, thick, wonggrey] (9.7, 0.3) -- (9.3, 0.3);
+    \draw[->, thick, wonggrey] (10.3, 0.3) -- (10.7, 0.3);
+    
+    % wave direction arrow above the pipe
+    \draw[->, very thick, wongorange] (4, 2.2) -- (8, 2.2);
+    \node at (6, 2.6) {transition wave};
+    
+\end{tikzpicture}
+
+\end{document}
+
 
 ```
 
@@ -46,11 +98,11 @@ This repository provides the following:
 
 **D3 — Wave speed comparison.** A quantitative comparison of the wave speed predicted by Arrieta's continuum energy balance,
 
-```
-        ψ(u_hi) − ψ(u_lo)
-v  =  ─────────────────────────
-       γ ∫_{−∞}^{∞} (du/dξ)² dξ
-```
+$$
+\begin{equation}
+v = \frac{\psi(u_{\text{hi}}) - \psi(u_{\text{lo}})}{\gamma \int_{-\infty}^{\infty} \left(\frac{du}{d\xi}\right)^2 d\xi}
+\end{equation}
+$$
 
 against measured wave speeds across parameter space — at least 20 parameter combinations spanning the coupling strength `A`, the asymmetry of the bistable potential `δ`, and the damping `α` — with the ratio `v_pred / v_sim` properly tested for uncertainties.
 

@@ -1,5 +1,9 @@
 # 1D Bistable Diaphragm Metafluid
 
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Jupyter](https://img.shields.io/badge/Jupyter-notebook-orange.svg)
+
 Continuum and reduced-order modelling of transition waves in a fluid-coupled bistable diaphragm metafluid.
 
 ## Overview
@@ -88,6 +92,36 @@ Bistable diaphragms have previously been studied with magnetic and spring coupli
 
 </details>
 
+## Simulation
+
+The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.009, \alpha=0.05, \Delta t=10^{-4}$):
+
+![Transition wave animation](figures/wave_animation.gif)
+
+**Effect of damping** — underdamped ($\alpha=0.01$, left) vs overdamped ($\alpha=0.30$, right). At low damping, diaphragms ring down after snapping, creating an oscillatory wake. At high damping, each snap is clean and the front is sharp:
+
+![Damping comparison](figures/wave_comparison.gif)
+
+## Key results
+
+- **Wave speed** at canonical parameters ($A=1, \delta=0.009, \alpha=0.05$): $v \approx 0.797$ sites/time
+- **Formula accuracy**: the Arrieta continuum energy-balance formula predicts v to within $3 \%$ when $\alpha \geq 0.05$ and $\delta \leq 0.001$ ($A=1$)
+- **Ringing dissipation**: $\sim 34 \%$ of total viscous dissipation at $\alpha=0.05$ comes from post-snap oscillations, not the kink itself — the primary mechanism by which the formula overpredicts wave speed in the underdamped regime
+- **Volume collapse** at $A > 1.8$ stalls the wave entirely; the fluid-coupled system cannot be driven into the continuum limit by increasing $A$ alone, unlike spring-coupled analogues
+
+### Wave-speed sweep (selected results, 45 combinations total)
+
+| $A$ | $\delta$ | $\alpha$ | $v_{sim}$ | $v_{pred}$ | ratio |
+|---|---|---|---|---|---|
+| 1.0 | 0.001 | 0.10 | 0.2208 | 0.2233 | **1.01** |
+| 1.0 | 0.001 | 0.05 | 0.4085 | 0.4199 | **1.03** |
+| 1.0 | 0.003 | 0.10 | 0.5533 | 0.5653 | **1.02** |
+| 1.0 | 0.009 | 0.05 | 0.7972 | 1.4480 | 1.82 |
+| 0.5 | 0.009 | 0.02 | 0.4655 | 1.8804 | 4.04 |
+| 2.0 | 0.009 | 0.02 | 0.3052 | 9.4502 | 30.97 |
+
+Full results in [`results/wave_speed_sweep.csv`](results/wave_speed_sweep.csv).
+
 ## Deliverables
 
 This repository provides the following:
@@ -111,10 +145,6 @@ against measured wave speeds across parameter space — at least 20 parameter co
 **D5 — Kink-width formula.** An analytical kink-width formula derived from the reduced-order continuum PDE.
 
 **Stretch goal.** If all of the above are met, extend the model to 2D.
-
-## Reproducible result
-
-The headline reproducible result is the measured travelling wave speed `v` at a fixed set of parameters in the continuum regime (approximately `A ≈ 1.0`, `δ ≈ 0.009`, `α ≈ 0.05`, on a lattice of `N ≈ 200` diaphragms with time step `Δt ≈ 10⁻⁴`). Uncertainty is quantified by running across lattice sizes (`N = 100, 200, 500`) and initial perturbations, reporting the standard deviation of `v`. The target is a wave speed reproducible to within a few percent across implementations.
 
 ## Repository structure
 

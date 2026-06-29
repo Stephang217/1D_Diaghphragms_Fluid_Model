@@ -106,7 +106,7 @@ The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.00
 
 - **Wave speed** at canonical parameters ($A=1, \delta=0.009, \alpha=0.05$): $v \approx 0.797$ sites/time
 - **Formula accuracy**: the Arrieta continuum energy-balance formula predicts v to within $3 \%$ when $\alpha \geq 0.05$ and $\delta \leq 0.001$ ($A=1$)
-- **Ringing dissipation**: $\sim 34 \%$ of total viscous dissipation at $\alpha=0.05$ comes from post-snap oscillations, not the kink itself — the primary mechanism by which the formula overpredicts wave speed in the underdamped regime
+- **Ringing dissipation**: $\sim 34$ \% of total viscous dissipation at $\alpha=0.05$ comes from post-snap oscillations, not the kink itself — the primary mechanism by which the formula overpredicts wave speed in the underdamped regime
 - **Volume collapse** at $A > 1.8$ stalls the wave entirely; the fluid-coupled system cannot be driven into the continuum limit by increasing $A$ alone, unlike spring-coupled analogues
 
 ### Wave-speed sweep (selected results, 45 combinations total)

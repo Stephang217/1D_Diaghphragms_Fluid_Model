@@ -1,0 +1,344 @@
+% ============================================================================
+%  draft_sections.tex  --  paste-ready fragments for Draft v3
+%
+%  Each block below is labelled with where it goes.  Blocks marked [REPLACE]
+%  substitute text already in the draft; blocks marked [NEW] fill a [TODO].
+%  Every number quoted here is taken from a cached result in results/ -- the
+%  provenance is given in a comment above each block so you can re-check it.
+%
+%  Still not written here, and why:
+%    - Appendix C (reproducibility protocol) -- blocked on SCRTP access
+%    - Figure 1 (schematic) -- a drawing, not prose
+%    - Appendix D (B corrections) -- untested; your designated first cut
+%    - Section 3.5 per-diaphragm disorder -- not yet run
+%
+%  TWO INCONSISTENCIES IN THE DRAFT THAT I HAVE NOT SILENTLY FIXED -- decide
+%  which way you want them, then make them consistent everywhere:
+%
+%  (1) Which run is "canonical".  Section 2.5 quotes N=200, dt=1e-4, which is the
+%      reproducible-result protocol point of Section 3.5.  The dimensional sweeps
+%      behind Sections 3.2-3.3 use N=300, dt=5e-4, and the dimensionless sweeps
+%      use N=150-200 with T scaled per run.  All are converged, but a reader
+%      reproducing Section 3.2 from Section 2.5 will use the wrong one.  Either
+%      state the protocol point in 2.5 and note that sweeps size N and T per run,
+%      or give a small table.
+%
+%  (2) Speed extraction.  The draft's 2.5 bullet said "tanh fitting to the front".
+%      The code does not do that: it takes the last site below the midpoint,
+%      interpolates to sub-site resolution, and fits a straight line to position
+%      against time.  The tanh fit exists in the pipeline but is used for the
+%      gradient integral I, not for the speed.  My 2.5 below describes the code.
+% ============================================================================
+
+
+% ============================================================================
+% [REPLACE]  Abstract -- three numbers change
+%   10^-8      -> 10^-14   (results: notebook cell prints 1.0e-14)
+%   ~15% / 3 sites -> the real accuracy (results: validity map)
+%   X%         -> 9.7%     (results: uq_reproducible_result.ipynb)
+% ============================================================================
+
+Transition waves in bistable lattices propagate by converting stored potential
+energy into a self-sustaining front, but existing realisations couple their
+elements through springs or magnets. We study a one-dimensional chain of bistable
+diaphragms coupled instead by a compressible gas obeying Boyle's law --- the
+ingredient that makes the array a metafluid rather than a metamaterial.
+Non-dimensionalisation reduces the discrete dynamics to four groups
+$(\eta,\theta,\Pi,\Omega)$, and simulations at matched groups collapse to within
+$10^{-14}$, at integrator round-off. Writing the gas force exactly as a linear
+spring stiffness $\eta\theta$ multiplied by a Boyle correction separates the two
+roles the fluid plays: $\eta\theta$ sets the front width, which scales as
+$\sqrt{\eta\theta}$ and determines whether a travelling profile exists at all,
+while the correction contributes a nonlinearity no spring chain can produce. We
+map the validity of the energy-balance speed formula, finding agreement to within
+$3\%$ wherever the front spans at least three lattice sites and to within $10\%$
+down to two, with predictable failure below, where Peierls--Nabarro pinning stalls
+the wave entirely. The stall threshold is not a fixed front width but follows
+$w_c \propto -\ln\Pi$, the signature of a barrier exponential in width competing
+against the energy released per snap. The fluid fingerprint is a
+compression/rarefaction speed gap, linear in $\theta$ and reaching $10.8\%$ at
+$\theta = 0.4$, identically zero under spring coupling. The measured speed carries
+a parametric uncertainty of $9.7\%$ under manufacturing-scale variation in
+$\delta$, $A$ and $\alpha$, against a numerical floor of $0.05\%$.
+
+
+% ============================================================================
+% [NEW]  Section 1 -- the three background paragraphs
+% ============================================================================
+
+A bistable element stores energy in its higher-energy state and gives it up on
+switching. Chain such elements together and a disturbance that switches one can
+switch its neighbour, and that neighbour's neighbour in turn, so a front travels
+along the chain releasing stored energy as it goes. Nadkarni et al.\
+\cite{nadkarni2014dynamics,nadkarni2016universal} showed that the speed of such a
+front follows from a balance between the energy released per element and the
+energy dissipated per element, and Raney et al.\ \cite{raney2016stable}
+demonstrated the waves experimentally in a chain of buckled beams coupled by
+elastomeric linkages, where they propagate over long distances without decaying.
+Hwang and Arrieta \cite{hwang2018input} applied the same balance to bistable
+lattices used for energy harvesting. The formula that comes out of that argument,
+quoted as \eqref{eq:arrieta} below, is the one this paper tests; it was derived
+for elements coupled by linear springs and magnets, and what happens when the
+coupling is a fluid instead is not obvious in advance.
+
+The energy-balance argument assumes a travelling profile exists --- that the front
+can be written as a fixed shape moving at constant speed. On a discrete lattice
+that assumption has a limit. Puglisi and Truskinovsky \cite{puglisi2000mechanics}
+analysed a chain of bistable springs and showed how the discrete problem departs
+from its continuum counterpart, and the kinetic relations that govern how fast a
+lattice front actually moves were developed by Slepyan \cite{slepyan2002models}
+and by Truskinovsky and Vainchtein \cite{truskinovsky2005kinetics}. The obstacle
+is the Peierls--Nabarro barrier: a periodic energy landscape the front must climb
+to advance by one lattice site, absent from any continuum description and
+exponentially small when the front is wide compared with the lattice spacing. The
+controlling quantity is therefore not the coupling strength or the drive
+separately but the ratio of front width to lattice spacing, and Sections
+\ref{sec:validity} and \ref{sec:pinning} are organised around it.
+
+The metafluid setting is more recent. Djellouli et al.\
+\cite{djellouli2024metafluid} suspended bistable elastomeric shells in a liquid
+and showed that the resulting fluid has a compressibility, an optical response and
+a viscosity that can be tuned by design, the shells buckling and unbuckling as the
+pressure is cycled. Fluid-driven multistable membranes have been studied in a
+related setting by Peretz et al.\ \cite{peretz2020underactuated}, and the
+mathematical framework for arrays of subwavelength resonators --- the reduced,
+discrete description of a many-element system that this paper also relies on ---
+has been developed by Ammari, Davies and Hiltunen \cite{ammari2023functional}.
+What has not been studied is a chain of bistable elements in which the coupling
+itself is the fluid.
+
+Every one-dimensional bistable chain studied to date couples its elements through
+springs or magnets. Here the coupling is a compressible gas obeying Boyle's law,
+and this is the whole of the novelty: the coupling force is lopsided in a way no
+spring can be, and that asymmetry survives into the wave as a measurable,
+direction-dependent speed.
+
+
+% ============================================================================
+% [NEW]  Section 1 -- contributions and roadmap
+% ============================================================================
+
+The contributions are as follows. \textbf{D1} We derive the fluid-coupled discrete
+model and reduce it to four dimensionless groups, writing the gas force exactly as
+a spring stiffness times a Boyle correction (Section \ref{sec:boyle}).
+\textbf{D2} We verify the simulator: runs at matched groups but very different
+dimensional parameters agree to $10^{-14}$ (Section \ref{sec:verification}).
+\textbf{D3} We map where the energy-balance speed formula holds, and show the
+controlling variable is the front width measured in lattice sites (Section
+\ref{sec:validity}). \textbf{D4} We show that weak coupling pins the wave outright
+while weak well asymmetry never does, and that the two are one result seen along
+two axes (Section \ref{sec:pinning}). \textbf{D5} We measure the
+compression/rarefaction speed asymmetry, the fingerprint of the fluid coupling and
+identically absent from any spring chain (Section \ref{sec:fingerprint}). Section
+\ref{sec:uq} quantifies the uncertainty on the measured speed; Appendices A and B
+give the two derivations the results lean on.
+
+
+% ============================================================================
+% [REPLACE]  Section 3.1 Verification -- clears both tags
+%   provenance: dimensionless_model.ipynb "same groups, same wave" cell
+%               diaphragm_metafluid.ipynb dt- and N-convergence cells
+% ============================================================================
+
+Two physical systems that share the four groups $(\eta,\theta,\Pi,\Omega)$ should
+produce the same wave, and this is the sharpest available check on the reduction
+from \eqref{eq:eom} to \eqref{eq:nondim}: it exercises the algebra, the
+integrator and the boundary treatment at once. We build two systems with
+deliberately unlike dimensional parameters --- $(m,k,a,A) = (1, 1, 1, 1)$ and
+$(3\times10^{-3},\, 250,\, 0.02,\, 5\times10^{-4})$, a factor of $250$ in
+stiffness and $50$ in length scale --- and choose $p_0$, $V_0$, $\delta$ and
+$\alpha$ in each so that all four groups match. Integrating both, and separately
+integrating the dimensionless equation \eqref{eq:nondim} itself, the three
+trajectories agree to $1.0\times10^{-14}$ in the maximum norm over the displacement
+field across the whole run. That residual sits at integrator round-off for double
+precision, not at a modelling discrepancy, so the reduction is exact to the
+accuracy the arithmetic permits.
+
+The timestep is fixed by a Cauchy self-convergence test. The lattice has no closed
+form solution to compare against, so instead of measuring $|u_{\text{num}} -
+u_{\text{exact}}|$ we halve $\Delta t$ repeatedly and measure the gap between
+successive refinements, $|u(\Delta t) - u(\Delta t/2)|$; a sequence converges if
+its terms close on each other, whether or not the limit is known. The gap falls
+with slope $2$ on log--log, matching the second-order accuracy of velocity Verlet
+and confirming the scheme is converging at its design rate rather than being
+limited by the damping treatment. Lattice size is checked separately, comparing
+matched pairs at $T = 2N$ so that the front traverses the same fraction of the
+domain in each and sponge bias does not vary with $N$; the measured speed is flat
+in $N$ beyond $N \approx 100$. The residual numerical uncertainty on the wave
+speed is $\pm0.0001$ on $0.2206$, or $0.05\%$, and Section \ref{sec:uq} uses this
+as the floor beneath the parametric spread.
+
+
+% ============================================================================
+% [REPLACE]  Section 3.2 -- accuracy sentence + the confirmed low-damping claim
+%   provenance: results/alpha_low_windows.csv (6 alpha values, 3tau vs 9tau)
+%               dimensionless validity map (Omega sweep)
+% ============================================================================
+
+Agreement is within $3\%$ wherever the front spans at least three lattice sites,
+and within $10\%$ down to a front of about two sites; below that it degrades
+quickly and predictably, reaching $23\%$ at $1.3$ sites and $66\%$ at one site,
+because the travelling profile $U(\xi)$ assumed by \eqref{eq:arrieta} no longer
+exists in any meaningful sense. Since the front width scales as $\sqrt{\kappa}$,
+this is a statement about the coupling strength alone.
+
+At low damping the formula overpredicts, and one candidate explanation is a
+measurement artefact: the post-snap ringing takes time to die, so a run that is
+too short measures a wave that has not yet settled. Appendix \ref{app:wake} shows
+that every mode of the wake decays with the same envelope $e^{-\Omega\tilde t/2}$,
+so the relevant timescale is $\tilde\tau = 2/\Omega$ and the test is
+straightforward: measure the ratio in successive time windows of a single long
+run, sizing the lattice to the underdamped speed so the front stays in the bulk.
+Across six damping values the ratio is flat to three significant figures between
+$3\tilde\tau$ and $9\tilde\tau$ --- $1.803$, $1.525$, $1.269$, $1.125$, $1.045$
+and $1.023$ as $\Omega$ increases --- so it does not drift back towards unity once
+the ringing has gone, and the overprediction is a genuine steady-state effect
+rather than a finite-run-time one. The dimensionless sweep reproduces the same
+curve from an independently written integrator, the ratio climbing from $1.017$ to
+$2.788$ as $\Omega$ falls from $1.4$ to $0.03$. What the formula neglects in this
+regime is the front's own inertia and the lattice waves it radiates, neither of
+which fades with time.
+
+
+% ============================================================================
+% [NEW]  Section 3.3 -- replaces the closing [TODO]; the prediction is confirmed
+%   provenance: results/pinning_vs_coupling.csv, pinning_finiteT.csv,
+%               pinning_boundary.csv;  regenerate with scripts/pinning_boundary.py
+% ============================================================================
+
+That reasoning makes a prediction, and it holds. Sweeping $\kappa$ downwards at
+the canonical drive, the speed falls steadily and then stops dead between
+$\kappa = 0.34$ and $\kappa = 0.30$, a front width between $0.83$ and $0.78$
+lattice spacings. The last propagating point still moves at a finite
+$v = 4.5\times10^{-3}$, so the arrest is abrupt at this resolution rather than a
+smooth approach to zero. Distinguishing a pinned front from a very slow one
+matters here, since a front creeping at $v \sim 10^{-4}$ is indistinguishable from
+a stationary one in a short run: re-running the first pinned point at $T = 1500$,
+$6000$ and $30\,000$ leaves the front at an identical position, $5.587$, with the
+fitted speed falling to $-4.5\times10^{-20}$. Over a twenty-fold span of run time
+the front does not advance at all.
+
+Repeating the exercise at each of five drives locates the boundary in the
+$(\kappa,\Pi)$ plane, and it is not a fixed width. The critical width runs from
+$1.10$ lattice spacings at $\Pi = 0.03$ down to $0.38$ at $\Pi = 0.30$, a factor
+of $2.9$ across a tenfold change in drive, so ``the front is narrower than a
+lattice spacing'' is not the criterion --- at weak drive a $1.1$-spacing front
+pins, while at strong drive a $0.38$-spacing front still runs. What does hold is
+the form the barrier argument predicts. If the barrier falls exponentially with
+width and depinning occurs when the drive matches it, then $w_c$ should be linear
+in $\ln\Pi$, and it is:
+%
+\begin{equation}
+  w_c = 0.085 - 0.303\,\ln\Pi, \qquad R^2 = 0.964,
+  \label{eq:wc}
+\end{equation}
+%
+against $R^2 = 0.876$ for the best pure power law. Read the other way,
+\eqref{eq:wc} says that at fixed low $\kappa$ there is a threshold in $\Pi$ after
+all: at $\kappa = 0.32$ the wave pins below $\Pi = 0.115$, and at $\kappa = 0.074$
+below $\Pi = 0.30$. The absence of a threshold in the $\Pi$ sweep of the previous
+paragraph is therefore a statement about canonical $\kappa$, where the barrier is
+negligible, and not a general one. The two sweeps are one result.
+
+It is worth being explicit about why the threshold cannot be a continuum effect.
+Equation \eqref{eq:arrieta} gives $v^* = \Delta\tilde\psi/(\Omega I)$; as the
+coupling weakens the front steepens, $I$ grows, and $v^*$ approaches zero
+asymptotically without ever reaching it at finite drive. A hard threshold ---
+$v$ exactly zero at finite $\kappa$ and finite $\Pi$ --- is not available to any
+continuum description, so its existence is by itself evidence that the lattice is
+doing the work.
+
+
+% ============================================================================
+% [NEW]  Section 2.5 Numerical method
+%   NOTE: the draft's bullet said "tanh fitting to the front".  The code does
+%   NOT do this -- it uses midpoint crossing with sub-site interpolation, then a
+%   linear fit.  Written below to match the code.  The tanh fit exists elsewhere
+%   in the pipeline, for the gradient integral I, not for the speed.
+% ============================================================================
+
+Equation \eqref{eq:eom} is integrated with velocity Verlet. The damping term makes
+the acceleration depend on the velocity, so treating it explicitly would drop the
+scheme to first order; instead the velocity update is taken semi-implicitly, with
+the damping evaluated at the end of the step,
+%
+\begin{equation}
+  \dot u^{\,n+1} =
+  \frac{\dot u^{\,n} + \tfrac12\big(a^n + F^{n+1}/m\big)\Delta t}
+       {1 + \tfrac12\,\alpha\,\Delta t/m},
+  \label{eq:semiimplicit}
+\end{equation}
+%
+which restores second-order accuracy. The timestep $\Delta t = 10^{-4}$ is set by
+the stability of the snapping events rather than by the accuracy of the front: the
+front itself is resolved at far coarser steps, but a diaphragm crossing the
+spinodal moves quickly enough to destabilise the integration if the step is too
+long. Convergence in $\Delta t$ and in $N$ is reported in Section
+\ref{sec:verification}.
+
+The domain is $N = 200$ sites with fixed ends. The first five sites are held at
+$u_{\text{lo}}$ for the whole run, which acts as a sustained trigger at the
+low-energy end and removes any dependence of the measured speed on how the wave
+was started; the far end is held at $u_{\text{hi}}$. Both boundaries carry a
+sponge layer ten sites deep in which the damping is raised smoothly above its bulk
+value on a quadratic taper, adding $4.0$ at the outermost site --- one to two
+orders of magnitude above the bulk damping, which is $0.05$ to $0.10$ across the
+runs reported here. The taper matters: an abrupt change in damping reflects the
+radiation it is supposed to absorb. Its purpose is to absorb the lattice waves shed by the front
+before they can return and interfere with it, and all measurements are taken while
+the front is in the bulk, well clear of the sponge --- a front that reaches the
+sponge is slowed by it and gives a spuriously low speed, which is a failure mode
+we check for explicitly rather than assume away.
+
+The front position is located at each saved frame as the last site whose
+displacement lies below the midpoint $\tfrac12(u_{\text{lo}} + u_{\text{hi}})$,
+refined to sub-site resolution by linear interpolation between that site and its
+neighbour. The speed is then the slope of a straight-line fit to front position
+against time, taken over the steady portion of the run only; the initial transient,
+during which the front is still forming and accelerating onto the fixed point of
+Appendix \ref{app:fixedpoint}, is discarded before fitting. Position against time
+is genuinely straight once that transient has passed, which is the justification
+for the linear fit: over a run long enough for the front to cross $980$ sites, the
+fitted speed is constant to four significant figures across successive time
+windows, and the energy released by the snapping diaphragms matches the energy
+dissipated in each of them, as Appendix \ref{app:fixedpoint} requires.
+
+All simulations are written in Python with NumPy \cite{harris2020numpy}; the
+surrogate and sensitivity analysis of Section \ref{sec:uq} use scikit-learn
+\cite{pedregosa2011scikit}. Code, cached sweep outputs and the scripts that
+regenerate them are in the repository given in Appendix \ref{app:protocol}, which
+also gives the hardware and the commands needed to reproduce the canonical result.
+
+
+% ============================================================================
+% [NEW]  Appendix B -- closing paragraph; turns asserted theory into verified
+%   provenance: results/mode_decay.csv (3 Omega x 3 modes)
+% ============================================================================
+
+Both predictions are checked directly against the lattice. Initialising the chain
+in a single normal mode $\epsilon_n = A_0\sin(qn)$ with $q = m\pi/(N-1)$ --- an
+exact eigenvector of the discrete Laplacian under fixed ends, so the mode does not
+mix --- and fitting the decay of its envelope gives a rate equal to $\Omega/2$ to
+three decimal places for every combination of damping and wavenumber tested, with
+$R^2 = 1.0000$ on the log-envelope fit. The measured frequencies match
+$\sqrt{\omega(q)^2 - \Omega^2/4}$ to the same precision, including the small
+downward shift the damping imposes, which accounts for every residual. A single
+mode is a pure damped oscillator, exactly as \eqref{eq:dispersion} claims.
+
+The wake behind a real front is not one mode but a superposition of many, and the
+consequence is worth stating because it looks at first like a failure. Since every
+mode carries the same factor $e^{-\Omega\tilde t/2}$,
+%
+\begin{equation}
+  \epsilon_n(\tilde t) = e^{-\Omega\tilde t/2}
+  \sum_q A_q \sin(qn)\,\cos\!\big(\omega_d(q)\,\tilde t + \phi_q\big),
+  \label{eq:superposition}
+\end{equation}
+%
+so the signal is exactly an exponential envelope multiplying a quasi-periodic
+function. The envelope obeys the theory, but the modes beat against one another,
+individual peak heights are irregular, and fitting a decay to a single site over a
+short window recovers $\Omega/2$ only unreliably. Measuring one mode at a time
+removes the beating; measuring the total wake energy, which sums over sites and
+averages the cross terms away, is the other clean route and decays at $\Omega$,
+twice the amplitude rate.

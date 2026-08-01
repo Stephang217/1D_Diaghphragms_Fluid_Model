@@ -15,7 +15,7 @@ import numpy as np
 
 
 def run_sim(A, delta, alpha, N=120, T=150, dt=1e-4,
-            n_sponge=10, damp_max=4.0, n_trigger=5):
+            n_sponge=10, damp_max=4.0, n_trigger=5, delta_field=None):
     """
     Run one simulation and return (v_measured, v_predicted, ratio).
 
@@ -27,20 +27,37 @@ def run_sim(A, delta, alpha, N=120, T=150, dt=1e-4,
     snapshot — cleaner than the last-frame snapshot (which sits near the sponge), because the
     mid-run kink is in the bulk of the lattice, not near the sponge boundary.
 
+    `delta_field` (optional, length N) gives each diaphragm its own asymmetry, for
+    studying per-diaphragm manufacturing disorder. `delta` is then the mean of that
+    field and is what sets the well positions, the trigger state and ΔΨ: once δ
+    varies from site to site there is no single pair of wells, and the cubic whose
+    roots define them takes a scalar. Only the on-site force sees the field itself.
+    Left as None the function behaves exactly as before.
+
     Returns (nan, nan, nan) if the wave fails to propagate (e.g. volume collapse).
     """
     a2 = 0.09
     m = 1.0; p0 = 1.0; v0 = 1.0
 
+    delta_mean = float(delta)
+    if delta_field is None:
+        delta_arr = delta_mean
+    else:
+        delta_arr = np.asarray(delta_field, dtype=float)
+        if delta_arr.shape != (N,):
+            raise ValueError(f"delta_field must have shape ({N},), got {delta_arr.shape}")
+
     # ── Well positions ────────────────────────────────────────────────────────
-    roots = np.roots([1, 0, -a2, delta])
+    # From the mean asymmetry: the wells, the initial condition and ΔΨ are all
+    # properties of the chain as a whole, not of an individual diaphragm.
+    roots = np.roots([1, 0, -a2, delta_mean])
     real_roots = sorted(roots[np.abs(roots.imag) < 1e-10].real)
     if len(real_roots) < 3:
         return np.nan, np.nan, np.nan     # delta too large means no bistability
     u_lo, _, u_hi = real_roots
 
     def psi(u):
-        return u**4/4 - a2*u**2/2 + delta*u
+        return u**4/4 - a2*u**2/2 + delta_mean*u
 
     # ── Damping array with sponge layers ─────────────────────────────────────
     damp = np.ones(N) * alpha
@@ -51,7 +68,7 @@ def run_sim(A, delta, alpha, N=120, T=150, dt=1e-4,
 
     # ── Force functions (same physics as notebook top) ────────────────────────
     def f_bistable(u):
-        return u**3 - a2*u + delta
+        return u**3 - a2*u + delta_arr    # scalar, or per-diaphragm field
 
     def pressure_force(u):
         F = np.zeros_like(u)

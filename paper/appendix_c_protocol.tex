@@ -1,0 +1,143 @@
+% ============================================================================
+%  Appendix C -- Reproducibility protocol
+%
+%  Everything here is filled in EXCEPT the SCRTP-specific lines, which are marked
+%  % TODO(SCRTP) and need the account before they can be written honestly.  There
+%  are four of them: node type, module loads, measured wall-time on the cluster,
+%  and the queue/partition name.  scripts/uq_avon.sbatch still carries placeholder
+%  module names for the same reason -- fix both together.
+%
+%  Two things to refresh at submission:
+%    - the commit hash below (it is the hash at the time of writing)
+%    - the package versions, if the environment changes
+% ============================================================================
+
+\section{Reproducibility protocol}
+\label{app:protocol}
+
+This appendix is written so that a reader who has never seen the code can
+reproduce the wave speed quoted in Section \ref{sec:uq} and check it against a
+reference value.
+
+\subsection*{What is being reproduced}
+
+The canonical result is the transition wave speed at the protocol point
+%
+\begin{equation*}
+  A = 1.0, \qquad \delta = 0.001, \qquad \alpha = 0.10,
+  \qquad N = 200, \qquad \Delta t = 10^{-4}, \qquad T = 400,
+\end{equation*}
+%
+with expected value
+%
+\begin{equation*}
+  v = 0.2206 \;\pm\; 0.0001\ \text{(numerical)} \;\pm\; 0.0215\ \text{(parametric)}.
+\end{equation*}
+%
+The numerical figure is the convergence floor from Section
+\ref{sec:verification}; the parametric figure is the spread induced by
+$\pm10\%$ manufacturing tolerances on $\delta$, $A$ and $\alpha$, and is the
+number a reader reproducing a \emph{physical} device should expect to meet. A
+rerun of the code should match the reference to the numerical figure, not the
+parametric one.
+
+\subsection*{Code and environment}
+
+\begin{description}
+  \item[Repository]
+    \url{https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model}
+  \item[Commit]
+    \texttt{20cf0b0} % TODO: refresh at submission
+  \item[Language]
+    Python 3.14.6
+  \item[Packages]
+    \texttt{numpy} 2.3.4, \texttt{scipy} 1.x, \texttt{pandas} 2.3.3,
+    \texttt{scikit-learn} 1.9.0, \texttt{matplotlib} 3.10.7.
+    Pinned in \texttt{requirements.txt}; install with
+    \texttt{pip install -r requirements.txt}.
+\end{description}
+
+No compiled extensions, no GPU, and no random number generation in the canonical
+run itself: the simulation is deterministic, so a correct rerun reproduces the
+reference to floating-point round-off rather than to a tolerance. Randomness
+enters only in the ensembles of Section \ref{sec:uq}, where every seed is
+recorded in the CSV header.
+
+\subsection*{The single canonical run}
+
+\begin{verbatim}
+    git clone https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model
+    cd 1D_Diaghphragms_Fluid_Model
+    git checkout 20cf0b0
+    pip install -r requirements.txt
+
+    python3 -c "
+    import sys; sys.path.insert(0, 'src')
+    from model import run_sim
+    v, v_pred, ratio = run_sim(A=1.0, delta=0.001, alpha=0.10,
+                               N=200, T=400, dt=1e-4)
+    print(f'v_sim={v:.6f}  v_pred={v_pred:.6f}  ratio={ratio:.6f}')
+    "
+\end{verbatim}
+
+\noindent Expected output, to be compared against
+\texttt{results/protocol\_point.csv}:
+
+\begin{verbatim}
+    v_sim=0.220560  v_pred=0.223654  ratio=1.014028
+\end{verbatim}
+
+\noindent This is a single-core run taking approximately $50$~s on the
+development machine (Apple Silicon laptop).
+% TODO(SCRTP): quote the measured wall-time on an SCRTP node once available.
+
+\subsection*{Reproducing the uncertainty}
+
+The parametric band requires the ensemble rather than the single run:
+
+\begin{verbatim}
+    python3 scripts/uq_sweep.py                 # 256 train + 32 test
+    python3 scripts/uq_sweep.py --mode edge     # 64 + 16, near the validity edge
+    python3 scripts/disorder_sweep.py           # per-diaphragm disorder
+\end{verbatim}
+
+\noindent Each script prints a projected runtime from a single timed evaluation
+before launching its pool, and writes a CSV into \texttt{results/} whose header
+records the seed, the sample count, the lattice settings, the package versions
+and the wall time. Loading them requires \texttt{comment='\#'}:
+\texttt{pd.read\_csv(path, comment='\#')}. Opening
+\texttt{uq\_reproducible\_result.ipynb} and running it top to bottom then
+regenerates the surrogate, the Sobol indices and the headline number from those
+CSVs.
+
+On the development machine the main ensemble is roughly $66$~min across
+$8$~workers.
+% TODO(SCRTP): node type, partition and measured wall-time for the ensembles.
+
+\subsection*{Running on SCRTP}
+
+\texttt{scripts/uq\_avon.sbatch} submits the ensemble to a single node.
+% TODO(SCRTP): the module load lines in that script are placeholders and must be
+% replaced with the real module names before this appendix is truthful.
+% TODO(SCRTP): state node type, partition, and the sbatch command verbatim.
+
+\subsection*{Results that ship pre-computed}
+
+Two sweeps are too slow to recompute casually and are committed as cached CSVs
+with the scripts that generate them, following the convention used throughout
+the notebooks: a cached file is loaded if present, and setting
+\texttt{FORCE\_RERUN = True} recomputes it.
+
+\begin{description}
+  \item[\texttt{results/pinning\_boundary.csv}]
+    the $(\kappa,\Pi)$ pinning boundary of Section \ref{sec:pinning}; five
+    bisections of seven runs each, roughly $70$~min. Regenerate with
+    \texttt{python3 scripts/pinning\_boundary.py}.
+  \item[\texttt{results/alpha\_low\_windows.csv}]
+    the low-damping time-window test of Section \ref{sec:validity}; the runs at
+    the smallest $\alpha$ are long because $\tilde\tau = 2/\Omega$ is large and
+    the lattice must be sized to the faster underdamped front.
+\end{description}
+
+\noindent Every other figure in the paper recomputes from scratch in at most a
+few minutes.

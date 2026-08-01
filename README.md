@@ -104,10 +104,13 @@ The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.00
 
 ## Key results
 
-- **Wave speed** at canonical parameters ($A=1, \delta=0.009, \alpha=0.05$): $v \approx 0.797$ sites/time
-- **Formula accuracy**: the Arrieta continuum energy-balance formula predicts v to within $3 \%$ when $\alpha \geq 0.05$ and $\delta \leq 0.001$ ($A=1$)
-- **Ringing dissipation**: $\sim 34$ \% of total viscous dissipation at $\alpha=0.05$ comes from post-snap oscillations, not the kink itself — the primary mechanism by which the formula overpredicts wave speed in the underdamped regime
-- **Volume collapse** at $A > 1.8$ stalls the wave entirely; the fluid-coupled system cannot be driven into the continuum limit by increasing $A$ alone, unlike spring-coupled analogues
+- **Four-group reduction.** The dynamics depend on exactly four dimensionless numbers $(\eta, \theta, \Pi, \Omega)$. Two physical systems built with deliberately unlike dimensional parameters but matched groups produce trajectories agreeing to $10^{-14}$ — integrator round-off, not a modelling residual.
+- **Where the speed formula works.** The controlling quantity is the front width in lattice spacings, $w = \sqrt{2\eta\theta}$. The energy-balance prediction is accurate to $2.8\%$ once the front spans three sites and stays within $10\%$ down to two, degrading to $66\%$ at one site where the travelling profile it assumes is no longer resolved.
+- **Pinning is a lattice effect.** Weakening the *drive* never stalls the wave — speed falls in exact proportion to $\delta$ over two decades with no threshold. Weakening the *coupling* does: below $\eta\theta \approx 0.3$ the front freezes, verified stationary to machine precision over a twenty-fold span of run time. The threshold is not a fixed width but follows $w_c = 0.085 - 0.303\ln\Pi$ ($R^2 = 0.96$), the signature of a barrier exponential in width competing against the energy released per snap.
+- **The fluid fingerprint.** Waves that compress the gas pockets run faster than their mirror image that stretches them — $2.6\%$ at $\theta = 0.1$ rising to $10.8\%$ at $\theta = 0.4$, linear in $\theta$. A spring chain gives identically zero, so this is the signature of the gas coupling specifically.
+- **Reproducible result.** $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0215$ (parametric) at the protocol point. Per-diaphragm disorder self-averages and contributes an order of magnitude less than a uniform batch offset.
+
+> **Superseded results.** Earlier versions of this README reported that post-snap ringing accounts for ~34% of dissipation and is the reason the formula overpredicts at low damping, and that volume collapse above $A \approx 1.8$ stalls the wave. Both were later overturned by better-sized tests. In steady state the ringing wake carries only a few percent of the dissipation, and the low-damping overprediction survives long after the ringing has fully decayed — it is a genuine steady-state effect (neglected front inertia and lattice radiation), not a measurement artefact. The $A$ limit did not reproduce once the damping and initial conditions were corrected.
 
 ### Wave-speed sweep (selected results, 45 combinations total)
 
@@ -153,12 +156,15 @@ against measured wave speeds across parameter space — at least 20 parameter co
 ├── README.md
 ├── LICENSE
 ├── requirements.txt
-├── diaphragm_metafluid.ipynb   # main simulation notebook (D2)
-├── src/                        # simulation + analysis code (D2–D4)
-├── docs/                       # analytical derivations (D1, D5)
-├── figures/                    # schematic and generated plots
-├── results/                    # wave-speed sweeps, space-time data
-└── scripts/                    # HPC batch / parameter-sweep scripts
+├── diaphragm_metafluid.ipynb      # dimensional model: validation, sweeps, dissipation
+├── dimensionless_model.ipynb      # four groups: validity map, pinning, gas-vs-spring
+├── uq_reproducible_result.ipynb   # reproducible result, GP surrogate, Sobol, disorder
+├── src/                           # shared simulator (run_sim) used by the scripts
+├── scripts/                       # ensembles + SCRTP batch wrapper
+├── paper/                         # report drafts, appendices, bibliography
+├── docs/                          # analytical derivations
+├── figures/                       # schematic, plots and animations
+└── results/                       # cached sweep outputs (CSV, with metadata headers)
 ```
 
 ## Getting started
@@ -167,6 +173,13 @@ against measured wave speeds across parameter space — at least 20 parameter co
 pip install -r requirements.txt
 jupyter notebook diaphragm_metafluid.ipynb
 ```
+
+Every expensive sweep is cached in `results/`, so the notebooks run top to bottom in
+minutes without recomputing them; set `FORCE_RERUN = True` in a notebook's setup cell
+to regenerate instead of load. The two slowest (`pinning_boundary.csv`, ~70 min, and
+the low-damping window test) ship pre-computed with the scripts that generate them.
+`paper/appendix_c_protocol.tex` gives the exact command to reproduce the headline wave
+speed and the reference value to check it against.
 
 ## References
 

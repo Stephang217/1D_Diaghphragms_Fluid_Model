@@ -1,8 +1,20 @@
-numpy
-scipy
-matplotlib
-jupyter
-pandas
+# Pinned to the environment the reported results were produced in, so Appendix C
+# can quote exact versions and mean it. Developed on Python 3.14.6.
+#
+# The cluster job needs far less than this: scripts/uq_sweep.py and src/model.py
+# import numpy and nothing else. pandas, matplotlib and scikit-learn are needed
+# only locally, for the notebook analysis.
+#
+# Loosen to >= if the cluster Python is older. Note that the seeded RNG stream is
+# not guaranteed identical across numpy major versions, so a regenerated ensemble
+# may differ sample-for-sample while matching statistically. The protocol point
+# itself is deterministic and reproduces exactly regardless.
 
-# UQ / surrogate modelling (Section 3.4: GP surrogate + Sobol indices)
-scikit-learn
+numpy==2.3.4
+scipy==1.16.2
+matplotlib==3.10.7
+pandas==2.3.3
+jupyter
+
+# UQ / surrogate modelling (Section 3.5: GP surrogate + Sobol indices)
+scikit-learn==1.9.0

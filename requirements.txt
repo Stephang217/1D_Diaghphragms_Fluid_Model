@@ -2,6 +2,7 @@ numpy
 scipy
 matplotlib
 jupyter
+pandas
 
-# Optional (stretch goal: surrogate / SciML modelling)
-# scikit-learn
+# UQ / surrogate modelling (Section 3.4: GP surrogate + Sobol indices)
+scikit-learn

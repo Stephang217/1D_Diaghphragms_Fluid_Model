@@ -608,28 +608,11 @@ to predict. Since $w = \sqrt{2\kappa}$, this is a statement about the coupling.
 
 The degradation has two distinct causes and it is worth separating them, because
 only the second is a failure of the formula. Between $w \approx 2$ and $w \approx 1$
-the profile is still a recognisable kink --- Figure~\ref{fig:front-regimes} shows the
-$\tanh$ passing through the lattice points at every width --- but it is sampled too
-sparsely for its gradient to be measured, and the gradient integral is the one
-quantity (10) needs. Below that the front stops being a travelling profile at all:
+the profile is still a recognisable kink --- the $\tanh$ of
+Figure~\ref{fig:tanh-overlay} still passes through the lattice points at $w = 1$ --- but it
+is sampled too sparsely for its gradient to be measured, and that gradient integral is the
+one quantity (10) cannot do without. Below that the front stops being a travelling profile at all:
 the integral no longer settles to a constant value within a run, drifting by $3.6\%$
 between two points of the same simulation at $w = 1.26$ against under $0.01\%$ at
 $w \ge 2$. The assumption (10) cannot do without is the one discreteness removes,
 and it is removed in that order --- first unmeasurable, then non-existent.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{figures/front_regimes.png}
-  \caption{The same front at four couplings, showing how the travelling profile is
-  lost. Markers are diaphragms, the line is $\tanh(\xi/\sqrt{2\kappa})$ with nothing
-  fitted, and the enlarged markers are the sites lying inside the switch. At
-  $\kappa = 8$ ($w = 4.00$) nine diaphragms span the switch and equation~(10) is exact
-  to $0.1\%$; at $\kappa = 2$ ($w = 2.00$) four remain and it is good to $1.2\%$; at
-  $\kappa = 0.79$ ($w = 1.26$) only three remain, the gradient integral drifts by
-  $3.6\%$ within a single run, and the formula is $10\%$ out; at $\kappa = 0.20$
-  ($w = 0.63$) the front is frozen between two sites. Note that the $\tanh$ keeps
-  passing through the points throughout --- the shape is not what fails first.
-  $\Pi = 0.115$, $\Omega = 10$, $\theta = 0.1$, $\Delta\tilde t = 5\times10^{-3}$,
-  $N$ and $T$ sized per panel so the front travels $25$ times its own width.}
-  \label{fig:front-regimes}
-\end{figure}

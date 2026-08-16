@@ -1,0 +1,172 @@
+% ============================================================================
+%  Appendix -- the tanh front, its width, and its gradient integral
+%
+%  This is the derivation the draft has referred to since v3 without ever
+%  containing it.  In v6 Appendix E is the parameter table, so this becomes
+%  whichever letter follows it.
+%
+%  It earns its place three times over: it supplies w = sqrt(2 kappa), which is
+%  the gate of the validity section; it supplies I = 4/(3w), which is what closes
+%  the speed formula; and the travelling-frame version at the end explains, in
+%  two lines, why the closed form overpredicts at low damping and underpredicts
+%  at high drive -- the sign flip that would otherwise be an unexplained
+%  empirical caveat.
+%
+%  provenance: results/closed_form_validation.csv for every measured number.
+% ============================================================================
+
+\section{The tanh front and its gradient integral}
+\label{app:tanh}
+
+\subsection*{The continuum limit}
+
+Section \ref{sec:boyle} wrote the gas force exactly as
+%
+\begin{equation}
+  F_n = \eta\theta \,\bigl(\tilde u_{n+1} - 2\tilde u_n + \tilde u_{n-1}\bigr)
+        \frac{1}{\tilde V_{n-1}\tilde V_n},
+\end{equation}
+%
+a spring-chain force of stiffness $\kappa = \eta\theta$ times a Boyle correction.
+For a front spread over many lattice sites the strains $\Delta_n$ are of order
+$1/w$, so the correction tends to unity, and the discrete Laplacian tends to a
+second derivative with respect to the continuous coordinate $\xi$. Writing
+$\tilde u_n(\tilde t) = U(\xi)$ the equation of motion becomes
+%
+\begin{equation}
+  \kappa\,U'' = U^3 - U + \Pi,
+  \label{eq:static-kink}
+\end{equation}
+%
+in the static, undriven limit --- the two corrections to which are taken up at
+the end of this appendix.
+
+\subsection*{The first integral}
+
+Equation \eqref{eq:static-kink} at $\Pi = 0$ integrates once. Multiplying through
+by $U'$ turns both sides into exact derivatives,
+%
+\begin{equation}
+  \kappa\,U'U'' = \bigl(U^3 - U\bigr)U'
+  \quad\Longrightarrow\quad
+  \frac{\mathrm{d}}{\mathrm{d}\xi}\Bigl[\tfrac12 \kappa (U')^2\Bigr]
+  = \frac{\mathrm{d}}{\mathrm{d}\xi}\Bigl[\tfrac14 U^4 - \tfrac12 U^2\Bigr],
+\end{equation}
+%
+so that
+%
+\begin{equation}
+  \tfrac12 \kappa (U')^2 = \tfrac14 U^4 - \tfrac12 U^2 + C.
+  \label{eq:first-integral}
+\end{equation}
+%
+The boundary conditions fix $C$, and it is worth being explicit about why they
+take the form they do. The front connects the two stable states, so
+$U \to \pm 1$ as $\xi \to \pm\infty$. And the material far ahead of and far
+behind the front is sitting still in a well rather than in the middle of
+switching, so $U' \to 0$ at both ends. It is that vanishing gradient which kills
+the integration constant: substituting $U = 1$, $U' = 0$ into
+\eqref{eq:first-integral} gives $C = \tfrac14$, and hence
+%
+\begin{equation}
+  \tfrac12 \kappa (U')^2 = \tfrac14\bigl(U^2 - 1\bigr)^2,
+  \qquad
+  U' = \frac{1 - U^2}{\sqrt{2\kappa}} ,
+\end{equation}
+%
+taking the branch with $U' > 0$ for $|U| < 1$, which is the front that switches
+upward. Had $C$ been anything else the right-hand side would not have been a
+perfect square and the solution would have been periodic rather than a single
+kink.
+
+Separating variables,
+%
+\begin{equation}
+  \int \frac{\mathrm{d}U}{1 - U^2} = \int \frac{\mathrm{d}\xi}{\sqrt{2\kappa}}
+  \quad\Longrightarrow\quad
+  \operatorname{artanh} U = \frac{\xi - \xi_0}{\sqrt{2\kappa}},
+\end{equation}
+%
+and inverting gives the front,
+%
+\begin{equation}
+  \boxed{\;U(\xi) = \tanh\!\left(\frac{\xi - \xi_0}{\sqrt{2\kappa}}\right),
+  \qquad w = \sqrt{2\kappa}\;}
+  \label{eq:tanh}
+\end{equation}
+%
+with $\xi_0$ free, as it must be: the lattice equation is translation invariant,
+and it is precisely that freedom which the Peierls--Nabarro barrier destroys once
+the front is narrow enough to feel individual sites.
+
+\subsection*{The gradient integral}
+
+The energy-balance speed of Section \ref{sec:speed} needs
+$I = \int_{-\infty}^{\infty} (U')^2 \,\mathrm{d}\xi$. From \eqref{eq:tanh},
+$U' = w^{-1}\operatorname{sech}^2(\xi/w)$, and with
+$\int \operatorname{sech}^4 x \,\mathrm{d}x = 4/3$ over the whole line,
+%
+\begin{equation}
+  I = \frac{1}{w^{2}}\int_{-\infty}^{\infty}
+      \operatorname{sech}^{4}\!\left(\frac{\xi}{w}\right) \mathrm{d}\xi
+    = \frac{1}{w^{2}} \cdot w \cdot \frac{4}{3}
+    = \frac{4}{3w}.
+  \label{eq:I}
+\end{equation}
+%
+Together with $\Delta\tilde\psi = 2\Pi$ from Appendix \ref{app:dpsi} this closes
+the speed formula,
+%
+\begin{equation}
+  v^\ast = \frac{\Delta\tilde\psi}{\Omega I}
+         = \frac{2\Pi}{\Omega}\cdot\frac{3w}{4}
+         = \frac{3\,\Pi\sqrt{2\kappa}}{2\,\Omega}.
+  \label{eq:closed}
+\end{equation}
+
+\subsection*{Two corrections, and the sign flip}
+
+Equation \eqref{eq:tanh} is the \emph{static, undriven} kink, and each of the two
+assumptions behind it fails in a direction we can now name.
+
+\paragraph{Motion narrows the front.} Restoring the time dependence with
+$\tilde u_n = U(n - v\tilde t)$, so that
+$\partial_{\tilde t}^2 \to v^2 U''$ and $\partial_{\tilde t} \to -vU'$, the
+equation of motion becomes
+%
+\begin{equation}
+  \bigl(\kappa - v^{2}\bigr) U'' + \Omega v\, U' = U^3 - U + \Pi .
+  \label{eq:travelling}
+\end{equation}
+%
+The stiffness that sets the width is therefore not $\kappa$ but $\kappa - v^2$: a
+moving front is narrower than a static one, and the effect is largest exactly
+where $v$ is largest, which is at low damping. (Equation \eqref{eq:travelling}
+also shows there can be no monotone kink at $v^2 > \kappa$.)
+
+\paragraph{Drive broadens it.} At $\Pi \neq 0$ the well tilts, the minima move to
+$\tilde u_\pm = \pm 1 - \Pi/2 + O(\Pi^2)$, and the front is no longer the
+zero-drive $\tanh$. The correction must be \emph{even} in $\Pi$: sending
+$\Pi \to -\Pi$ maps the potential to its mirror image and the kink to its mirror
+image, which has the same width. The leading term is therefore $O(\Pi^2)$, and
+fitting the measured widths over the grid of Appendix \ref{app:closed-form} gives
+%
+\begin{equation}
+  w \simeq \sqrt{2\bigl(\kappa - v^{2}\bigr)}\;\bigl(1 + 1.53\,\Pi^{2}\bigr).
+  \label{eq:width-corrected}
+\end{equation}
+%
+Over the $160$ points that expression predicts the measured width
+$w_{\rm eff} = 4/(3I)$ to a median of $1.9\%$ and a worst case of $4.8\%$, against
+a worst case of $12.0\%$ for the uncorrected $\sqrt{2\kappa}$.
+
+\paragraph{Why the closed form flips sign.} The two corrections push the width
+opposite ways, and \eqref{eq:closed} is linear in $w$, so they push the predicted
+speed opposite ways too. At low damping the front runs fast, $\kappa - v^2$ bites,
+the true front is narrower than $\sqrt{2\kappa}$ and \eqref{eq:closed}
+\emph{over}predicts --- by up to $12.7\%$ at $\Omega = 1$. At high damping the
+front is slow, that term is negligible, the $\Pi$ tilt dominates, the true front
+is broader and \eqref{eq:closed} \emph{under}predicts --- by up to $10.2\%$ at
+$\Omega \ge 3$. Between them the two cancel, which is why the closed form is at
+its most accurate near $\Omega \approx 1$--$3$ and why its useful window is
+stated as a range in $\Omega$ rather than a bound.

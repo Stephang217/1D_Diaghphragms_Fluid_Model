@@ -616,3 +616,40 @@ the integral no longer settles to a constant value within a run, drifting by $3.
 between two points of the same simulation at $w = 1.26$ against under $0.01\%$ at
 $w \ge 2$. The assumption (10) cannot do without is the one discreteness removes,
 and it is removed in that order --- first unmeasurable, then non-existent.
+
+% ============================================================================
+% [REPLACE]  Section 3.4 -- the fluid fingerprint, converged and extended
+%   provenance: results/compression_gap.csv, dimensionless_model.ipynb
+%               "squeeze/stretch gap" cell
+%
+%   TWO CHANGES.  (1) The published numbers came from N=150, T=120 runs that had
+%   not finished settling, biasing both speeds about 0.8% high.  The bias is
+%   common-mode and mostly cancels in the gap, but not entirely:
+%       theta = 0.1:   2.6%  -> 2.7%
+%       theta = 0.4:   10.8% -> 11.3%
+%       gap/theta:     0.25-0.27 -> 0.267-0.286 (and drifting, not flat)
+%   (2) The sweep now runs to the model's own limit instead of stopping at 0.4,
+%   which turns the saturation question from an open one into a closed one.  The
+%   sentence promising to take it up in Section 4 should be deleted along with
+%   the corresponding future-work sentence in the conclusion.
+% ============================================================================
+
+Holding $\eta\theta$ fixed while sweeping $\theta$ isolates the effect: the
+spring-like part of the coupling is frozen and $\theta$ dials the Boyle
+nonlinearity alone. The gap is real and it grows --- $2.7\%$ at the canonical
+$\theta = 0.1$, $11.3\%$ by $\theta = 0.4$, and $14.3\%$ at $\theta = 0.5$ ---
+while a spring chain gives identically zero at every point.
+
+It does not saturate. Pushing $\theta$ further does not reveal a plateau but ends
+the model: at $\theta = 0.6$ a gas pocket is driven to zero volume and there is no
+solution left to compare. What terminates the sweep is Boyle's law with a finite
+pocket rather than any feature of the wave, so saturation is not a question this
+model can be asked --- and answering it would require a gas law that does not
+diverge at zero volume, which is a change of physics and not of parameters.
+
+The growth is close to linear in $\theta$ but not exactly: the ratio
+gap$/\theta$ runs from $0.267$ to $0.286$ across the sweep, an upward drift of
+$7\%$ over a twenty-five-fold change. That is the shape the factorisation of
+Section \ref{sec:boyle} predicts. The Boyle correction enters only through
+$\theta\Delta_n$, so it acts at first order in $\theta$, and the drift is the
+second-order remainder becoming visible once $\theta$ is no longer small.

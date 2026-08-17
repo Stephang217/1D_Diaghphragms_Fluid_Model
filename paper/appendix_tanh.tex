@@ -12,6 +12,13 @@
 %  at high drive -- the sign flip that would otherwise be an unexplained
 %  empirical caveat.
 %
+%  The two width corrections are named and their direction explained, but NOT
+%  quantified: the fitted form w = sqrt(2(kappa - v^2))(1 + 1.53 Pi^2) is
+%  deliberately left out of this write-up.  It is overdamped-only (it inverts at
+%  Omega = 1), its coefficient is fitted, and it still leaves 4.8% worst case --
+%  more to defend than it is worth here.  The mechanisms cost nothing and are
+%  what answer "why does the error change sign".
+%
 %  provenance: results/closed_form_validation.csv for every measured number.
 % ============================================================================
 
@@ -118,7 +125,7 @@ Together with $\Delta\tilde\psi = 2\Pi$ from Appendix \ref{app:dpsi} this closes
 the speed formula,
 %
 \begin{equation}
-  v^\ast = \frac{\Delta\tilde\psi}{\Omega I}
+  v_{\rm pred} = \frac{\Delta\tilde\psi}{\Omega I}
          = \frac{2\Pi}{\Omega}\cdot\frac{3w}{4}
          = \frac{3\,\Pi\sqrt{2\kappa}}{2\,\Omega}.
   \label{eq:closed}
@@ -146,19 +153,11 @@ also shows there can be no monotone kink at $v^2 > \kappa$.)
 
 \paragraph{Drive broadens it.} At $\Pi \neq 0$ the well tilts, the minima move to
 $\tilde u_\pm = \pm 1 - \Pi/2 + O(\Pi^2)$, and the front is no longer the
-zero-drive $\tanh$. The correction must be \emph{even} in $\Pi$: sending
+zero-drive $\tanh$. The correction must be \emph{even} in $\Pi$, since sending
 $\Pi \to -\Pi$ maps the potential to its mirror image and the kink to its mirror
-image, which has the same width. The leading term is therefore $O(\Pi^2)$, and
-fitting the measured widths over the grid of Appendix \ref{app:closed-form} gives
-%
-\begin{equation}
-  w \simeq \sqrt{2\bigl(\kappa - v^{2}\bigr)}\;\bigl(1 + 1.53\,\Pi^{2}\bigr).
-  \label{eq:width-corrected}
-\end{equation}
-%
-Over the $160$ points that expression predicts the measured width
-$w_{\rm eff} = 4/(3I)$ to a median of $1.9\%$ and a worst case of $4.8\%$, against
-a worst case of $12.0\%$ for the uncorrected $\sqrt{2\kappa}$.
+image, which has the same width; the leading term is therefore $O(\Pi^2)$. It is
+not negligible at the top of the range sampled here: at $\Pi = 0.3$ the measured
+front is more than $10\%$ broader than $\sqrt{2\kappa}$.
 
 \paragraph{Why the closed form flips sign.} The two corrections push the width
 opposite ways, and \eqref{eq:closed} is linear in $w$, so they push the predicted

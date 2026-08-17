@@ -245,8 +245,8 @@ paragraph is therefore a statement about canonical $\kappa$, where the barrier i
 negligible, and not a general one. The two sweeps are one result.
 
 It is worth being explicit about why the threshold cannot be a continuum effect.
-Equation \eqref{eq:arrieta} gives $v^* = \Delta\tilde\psi/(\Omega I)$; as the
-coupling weakens the front steepens, $I$ grows, and $v^*$ approaches zero
+Equation \eqref{eq:arrieta} gives $v_{\rm pred} = \Delta\tilde\psi/(\Omega I)$; as
+the coupling weakens the front steepens, $I$ grows, and $v_{\rm pred}$ approaches zero
 asymptotically without ever reaching it at finite drive. A hard threshold ---
 $v$ exactly zero at finite $\kappa$ and finite $\Pi$ --- is not available to any
 continuum description, so its existence is by itself evidence that the lattice is
@@ -460,7 +460,7 @@ so the reader sees the scatter rather than a summary statistic.
   ($w \to 0$, $I$ too large) begins at $0.045$, a tanh at the predicted
   $w = \sqrt{2\kappa} = 4$ begins at $0.069$, and a tanh at $2\sqrt{2\kappa} = 8$
   ($I$ too small) begins at $0.106$. All three settle on
-  $v^\ast = 0.068571$, agreeing to $4\times10^{-4}\%$, the two displaced ones
+  $v_{\rm sim} = 0.068571$, agreeing to $4\times10^{-4}\%$, the two displaced ones
   approaching from opposite directions. Left: front position against time. Right:
   local slope on a sliding window, without which the approach is invisible.
   $\eta = 80$, $\theta = 0.1$, $\Pi = 0.115$, $\Omega = 10$, $N = 200$, $T = 1000$,
@@ -501,17 +501,18 @@ $I = \int U'^2 \mathrm{d}\xi = 4/(3w)$, and with $\Delta\tilde\psi = 2\Pi$ from
 Appendix~\ref{app:dpsi},
 %
 \begin{equation}
-  v^\ast \;=\; \frac{2\Pi}{\Omega \cdot 4/(3w)} \;=\; \frac{3\,\Pi\sqrt{2\kappa}}{2\,\Omega}.
+  v_{\rm pred} \;=\; \frac{2\Pi}{\Omega \cdot 4/(3w)} \;=\; \frac{3\,\Pi\sqrt{2\kappa}}{2\,\Omega}.
   \label{eq:closed-form}
 \end{equation}
 %
 This stacks a second approximation on one already known to be imperfect, so the two
 were measured separately over a grid of $160$ points spanning
 $\kappa \in [4.5, 32]$ (front widths $w = 3$ to $8$ sites), $\Pi \in [0.02, 0.30]$ and
-$\Omega \in [1, 30]$, at $\theta = 0.1$: the energy balance evaluated with the
-\emph{measured} gradient integral, $v_{\rm EB}/v_{\rm meas}$, and the tanh substitution
-on top of it, $v_{\rm closed}/v_{\rm EB}$. Reporting only the combined error would say
-where \eqref{eq:closed-form} is wrong without saying why.
+$\Omega \in [1, 30]$, at $\theta = 0.1$. Equation \eqref{eq:arrieta} can be evaluated
+two ways: with the gradient integral measured from the simulated front, or with the
+$\tanh$ value $4/(3w)$. The first needs a simulation and is a diagnostic rather than a
+prediction; the second is $v_{\rm pred}$. Separating them says not just where
+\eqref{eq:closed-form} is wrong but which of its two approximations is responsible.
 
 \textbf{Where it holds.} For $\Pi \le 0.15$ and $\Omega \ge 3$ --- $75$ of the $160$
 points --- the closed form matches simulation with median error $1.0\%$ and worst case
@@ -519,10 +520,11 @@ $3.0\%$ across the full range of front widths. Over the whole grid the median is
 $2.2\%$ and the worst case $12.7\%$.
 
 \textbf{Where it degrades, and why.} The energy balance is not the culprit --- it is not
-even an approximation here. With the gradient integral taken at 4th order,
-$v_{\rm EB}/v_{\rm meas}$ has median $1.0003$ across all $160$ points and never departs
-from $1$ by more than $0.45\%$, flat in $\Pi$, $\Omega$ and $w$ alike. The whole of the drift is in the closure, $v_{\rm closed}/v_{\rm EB}$ running
-from $1.003$ at $\Pi = 0.02$ to $0.946$ at $\Pi = 0.30$. Nor is it $\Delta\tilde\psi$:
+even an approximation here. Evaluated with the measured gradient integral and taken at
+4th order, it reproduces $v_{\rm sim}$ to a median of $0.03\%$ across all $160$ points and
+never departs from it by more than $0.45\%$, flat in $\Pi$, $\Omega$ and $w$ alike. The
+whole of the drift belongs to the $\tanh$ substitution, which runs from $1.003$ at
+$\Pi = 0.02$ to $0.946$ at $\Pi = 0.30$. Nor is it $\Delta\tilde\psi$:
 the true well-depth difference at $\Pi = 0.3$ is $0.592$ against $2\Pi = 0.600$, only
 $1.3\%$ low. It is the width. At $\Pi = 0.3$ and $\Omega \ge 3$ the measured gradient
 integral is $11\%$ \emph{below} $4/(3w)$, i.e.\ the real front is broader than
@@ -535,8 +537,9 @@ up to $10.7\%$. The two approximations therefore partly cancel near $\Omega \app
 to $3$ and stop cancelling on either side, so \eqref{eq:closed-form} should be quoted
 with its damping window and not as "accurate at small $\Pi$".
 
-\textbf{A correction to an earlier draft of this appendix.} It reported
-$v_{\rm EB}/v_{\rm meas}$ falling from $1.032$ at $w = 3$ sites to $1.001$ at $w = 8$, and
+\textbf{A correction to an earlier draft of this appendix.} It reported the
+measured-integral form of \eqref{eq:arrieta} falling from $1.032$ times $v_{\rm sim}$ at
+$w = 3$ sites to $1.001$ at $w = 8$, and
 offered that as independent corroboration of the three-site accuracy figure of
 Section~\ref{sec:validity}. It was neither independent nor physical: both numbers came from
 the same second-order estimate of $\int U'^2\mathrm{d}\xi$, whose truncation error grows as

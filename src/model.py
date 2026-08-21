@@ -1,8 +1,12 @@
 """Discrete bistable-diaphragm chain simulator (dimensional form).
 
-This is a verbatim extraction of `run_sim` from diaphragm_metafluid.ipynb
-(the D3/D4 sweep cell), so scripts can import the exact simulator the
-notebook results were produced with. The notebook remains the source of the
+This began as a verbatim extraction of `run_sim` from diaphragm_metafluid.ipynb
+(the D3/D4 sweep cell), so scripts could import the exact simulator the notebook
+results were produced with. One deliberate departure since: the gradient integral
+is taken with the 4th-order stencil of dimless.py rather than `np.gradient`, whose
+2nd-order truncation error underestimates the integral by 1.4% at the protocol
+point and inflates v_predicted by the same amount. Only v_predicted and the ratio
+are affected; v_measured is a fit to front position and never touches the stencil. The notebook remains the source of the
 validation story (convergence, energy audit); this module exists so the UQ
 ensemble and the reproducible-result protocol call one shared implementation.
 
@@ -12,6 +16,11 @@ absorbing sponge layers at both ends, sustained trigger on the left.
 """
 
 import numpy as np
+
+# One definition of the gradient stencil, shared with the dimensionless simulator
+# so the two cannot drift apart. Both live in src/, which every caller puts on the
+# path before importing this module.
+from dimless import grad4
 
 
 def run_sim(A, delta, alpha, N=120, T=150, dt=1e-4,
@@ -24,7 +33,7 @@ def run_sim(A, delta, alpha, N=120, T=150, dt=1e-4,
     without clobbering the notebook-level variables.
 
     v_predicted uses the Arrieta formula with ∫(du/dξ)² computed from a mid-run
-    snapshot — cleaner than the last-frame snapshot (which sits near the sponge), because the
+    snapshot at 4th order — cleaner than the last-frame snapshot (which sits near the sponge), because the
     mid-run kink is in the bulk of the lattice, not near the sponge boundary.
 
     `delta_field` (optional, length N) gives each diaphragm its own asymmetry, for
@@ -132,7 +141,7 @@ def run_sim(A, delta, alpha, N=120, T=150, dt=1e-4,
     # ── Arrieta formula: gradient integral from mid-run snapshot ─────────────
     # Use the middle frame to get the kink in the bulk, away from sponge distortion.
     snap_mid        = history[len(history) // 2]
-    du_dn           = np.gradient(snap_mid)
+    du_dn           = grad4(snap_mid)
     integral_direct = np.sum(du_dn**2)
     energy_diff     = psi(u_hi) - psi(u_lo)
 

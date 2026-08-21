@@ -1,7 +1,24 @@
-import sys, time, numpy as np
-sys.path.insert(0, "/private/tmp/claude-502/-Users-u5749193-Library-CloudStorage-OneDrive-UniversityofWarwick-Documents-PhD-Project-Summer-Project-2026-Repository/f88775c7-8a23-41b9-a4d5-3b6fa2dbf448/scratchpad")
-import matplotlib; matplotlib.use('Agg')
-from dimless_defs import *
+"""Is the pinning threshold width-controlled or energy-controlled?
+
+A standalone diagnostic. It prints; it does not write a CSV. The committed
+results/pinning_boundary.csv, and the figure drawn from it, are produced by the
+corresponding cell of dimensionless_model.ipynb -- this script is the scratch
+version that established the result and is kept because it runs the bisection
+without needing the notebook.
+
+    python3 scripts/pinning_boundary.py     # ~70 min single core
+"""
+import os
+import sys
+import time
+
+import numpy as np
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src'))
+from dimless import run, CANONICAL           # noqa: E402  (path set above)
+
+theta = CANONICAL['theta']
+Omega = CANONICAL['Omega']
 
 # Does the pinning threshold move with the DRIVE, or stay put at fixed WIDTH?
 #   width-controlled (discreteness) -> eta*theta_c ~ constant, at most log(Pi)

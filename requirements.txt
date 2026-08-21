@@ -1,20 +1,26 @@
 # Pinned to the environment the reported results were produced in, so Appendix C
-# can quote exact versions and mean it. Developed on Python 3.14.6.
+# can quote exact versions and mean it. Developed on Python 3.14.7.
 #
-# The cluster job needs far less than this: scripts/uq_sweep.py and src/model.py
-# import numpy and nothing else. pandas, matplotlib and scikit-learn are needed
-# only locally, for the notebook analysis.
+# Reproducing the headline result needs numpy and jupyter only. The command in
+# Appendix C is
+#     jupyter nbconvert --to notebook --execute uq_reproducible_result.ipynb
+# which additionally uses pandas and matplotlib to read the cached ensembles and
+# draw the figures.
 #
-# Loosen to >= if the cluster Python is older. Note that the seeded RNG stream is
+# Regenerating the ensembles needs less again: scripts/uq_sweep.py and
+# src/model.py import numpy and nothing else.
+#
+# Loosen to >= on an older Python. Note that the seeded RNG stream is
 # not guaranteed identical across numpy major versions, so a regenerated ensemble
 # may differ sample-for-sample while matching statistically. The protocol point
 # itself is deterministic and reproduces exactly regardless.
 
 numpy==2.3.4
-scipy==1.16.2
-matplotlib==3.10.7
 pandas==2.3.3
+matplotlib==3.10.7
 jupyter
 
-# UQ / surrogate modelling (Section 3.5: GP surrogate + Sobol indices)
-scikit-learn==1.9.0
+# Only for diaphragm_metafluid.ipynb, which fits a tanh front width with
+# scipy.optimize.curve_fit. Nothing else in the repository imports scipy, and it
+# is not needed to reproduce any reported number.
+scipy==1.16.2

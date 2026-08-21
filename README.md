@@ -105,10 +105,10 @@ The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.00
 ## Key results
 
 - **Four-group reduction.** The dynamics depend on exactly four dimensionless numbers $(\eta, \theta, \Pi, \Omega)$. Two physical systems built with deliberately unlike dimensional parameters but matched groups produce trajectories agreeing to $10^{-14}$ — integrator round-off, not a modelling residual.
-- **Where the speed formula works.** The controlling quantity is the front width in lattice spacings, $w = \sqrt{2\eta\theta}$. The energy-balance prediction is accurate to $2.8\%$ once the front spans three sites and stays within $10\%$ down to two, degrading to $66\%$ at one site where the travelling profile it assumes is no longer resolved.
-- **Pinning is a lattice effect.** Weakening the *drive* never stalls the wave — speed falls in exact proportion to $\delta$ over two decades with no threshold. Weakening the *coupling* does: below $\eta\theta \approx 0.3$ the front freezes, verified stationary to machine precision over a twenty-fold span of run time. The threshold is not a fixed width but follows $w_c = 0.085 - 0.303\ln\Pi$ ($R^2 = 0.96$), the signature of a barrier exponential in width competing against the energy released per snap.
-- **The fluid fingerprint.** Waves that compress the gas pockets run faster than their mirror image that stretches them — $2.6\%$ at $\theta = 0.1$ rising to $10.8\%$ at $\theta = 0.4$, linear in $\theta$. A spring chain gives identically zero, so this is the signature of the gas coupling specifically.
-- **Reproducible result.** $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0215$ (parametric) at the protocol point. Per-diaphragm disorder self-averages and contributes an order of magnitude less than a uniform batch offset.
+- **Where the speed formula works.** The controlling quantity is the front width in lattice spacings, $w = \sqrt{2\eta\theta}$. The energy-balance prediction is accurate to $0.2\%$ once the front spans three sites and to $1.2\%$ down to two, degrading to $43\%$ at one site where the travelling profile it assumes is no longer resolved.
+- **Pinning is a lattice effect.** At canonical coupling, weakening the *drive* never stalls the wave — speed falls in proportion to $\delta$ over two decades with no threshold. That is a statement about a four-site front rather than about drive: narrow the front and a drive threshold appears too. Weakening the *coupling* stalls it directly: below $\eta\theta \approx 0.3$ the front freezes, verified stationary to machine precision over a twenty-fold span of run time. The threshold is not a fixed width but follows $w_c = 0.085 - 0.303\ln\Pi$ ($R^2 = 0.96$), the signature of a barrier exponential in width competing against the energy released per snap.
+- **The fluid fingerprint.** Waves that compress the gas pockets run faster than their mirror image that stretches them — $2.7\%$ at $\theta = 0.1$, $11.3\%$ at $\theta = 0.4$, $215\%$ at $\theta = 4$, close to linear only while $\theta$ is small and never saturating. A spring chain gives identically zero, so this is the signature of the gas coupling specifically. The sweep ends between $\theta = 7.5$ and $7.75$ where the stretching wave pins, at the same front width the coupling sweep arrests at — so the fingerprint and the pinning threshold are one result along two axes.
+- **Reproducible result.** $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0219$ (parametric) at the protocol point. Per-diaphragm disorder self-averages and contributes an order of magnitude less than a uniform batch offset.
 
 > **Superseded results.** Earlier versions of this README reported that post-snap ringing accounts for ~34% of dissipation and is the reason the formula overpredicts at low damping, and that volume collapse above $A \approx 1.8$ stalls the wave. Both were later overturned by better-sized tests. In steady state the ringing wake carries only a few percent of the dissipation, and the low-damping overprediction survives long after the ringing has fully decayed — it is a genuine steady-state effect (neglected front inertia and lattice radiation), not a measurement artefact. The $A$ limit did not reproduce once the damping and initial conditions were corrected.
 
@@ -116,7 +116,7 @@ The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.00
 
 | $A$ | $\delta$ | $\alpha$ | $v_{sim}$ | $v_{pred}$ | ratio |
 |---|---|---|---|---|---|
-| 1.0 | 0.001 | 0.10 | 0.2208 | 0.2233 | **1.01** |
+| 1.0 | 0.001 | 0.10 | 0.2206 | 0.2206 | **1.00** |
 | 1.0 | 0.001 | 0.05 | 0.4085 | 0.4199 | **1.03** |
 | 1.0 | 0.003 | 0.10 | 0.5533 | 0.5653 | **1.02** |
 | 1.0 | 0.009 | 0.05 | 0.7972 | 1.4480 | 1.82 |
@@ -158,9 +158,9 @@ against measured wave speeds across parameter space — at least 20 parameter co
 ├── requirements.txt
 ├── diaphragm_metafluid.ipynb      # dimensional model: validation, sweeps, dissipation
 ├── dimensionless_model.ipynb      # four groups: validity map, pinning, gas-vs-spring
-├── uq_reproducible_result.ipynb   # reproducible result, GP surrogate, Sobol, disorder
+├── uq_reproducible_result.ipynb   # reproducible result, tolerance ensemble, disorder
 ├── src/                           # shared simulator (run_sim) used by the scripts
-├── scripts/                       # ensembles + SCRTP batch wrapper
+├── scripts/                       # ensemble and sweep generators
 ├── paper/                         # report drafts, appendices, bibliography
 ├── docs/                          # analytical derivations
 ├── figures/                       # schematic, plots and animations

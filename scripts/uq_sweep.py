@@ -3,19 +3,14 @@
 
 Samples (delta, A, alpha) from independent uniform +/-10% boxes around the
 protocol point, runs the lattice simulation at each sample, and writes the
-results to CSV. The CSVs feed the GP surrogate + Sobol analysis in
-uq_reproducible_result.ipynb.
+results to CSV. The CSVs feed the tolerance band and the delta*A/alpha collapse
+in uq_reproducible_result.ipynb.
 
-Modes
------
-main : centred on the protocol point (A=1.0, delta=0.001, alpha=0.10), T=400
-edge : centred on the underdamped boundary (alpha=0.02), T=200 -- the wave is
-       ~3x faster there, so a shorter run keeps the front away from the sponge
+Centred on the protocol point (A=1.0, delta=0.001, alpha=0.10), T=400.
 
 Usage
 -----
-    python3 scripts/uq_sweep.py                  # main: 256 train + 32 test
-    python3 scripts/uq_sweep.py --mode edge      # edge:  64 train + 16 test
+    python3 scripts/uq_sweep.py                          # 256 train + 32 test
     python3 scripts/uq_sweep.py --n-train 8 --n-test 2   # quick smoke test
 
 Each CSV starts with '#' metadata lines (seed, versions, wall time) --
@@ -38,13 +33,9 @@ from model import run_sim  # noqa: E402  (path set above)
 REL = 0.10                                   # +/-10% manufacturing tolerance
 N_SITES, DT = 200, 1e-4                      # protocol lattice and timestep
 
-MODES = {
-    #        centre (delta, A, alpha)     T      n_train  n_test  seeds (train, test)
-    'main': {'centre': (0.001, 1.0, 0.10), 'T': 400.0, 'n_train': 256, 'n_test': 32,
-             'seeds': (42, 1234)},
-    'edge': {'centre': (0.001, 1.0, 0.02), 'T': 200.0, 'n_train': 64,  'n_test': 16,
-             'seeds': (7, 99)},
-}
+#        centre (delta, A, alpha)     T      n_train  n_test  seeds (train, test)
+CONFIG = {'centre': (0.001, 1.0, 0.10), 'T': 400.0, 'n_train': 256, 'n_test': 32,
+          'seeds': (42, 1234)}
 
 
 def lhs(n, d, rng):
@@ -103,18 +94,16 @@ def run_ensemble(X, T, out_csv, workers, seed, label):
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('--mode', choices=['main', 'edge'], default='main')
     p.add_argument('--n-train', type=int, default=None)
     p.add_argument('--n-test', type=int, default=None)
     p.add_argument('--workers', type=int, default=8)
     args = p.parse_args()
 
-    cfg = MODES[args.mode]
+    cfg = CONFIG
     n_train = args.n_train if args.n_train is not None else cfg['n_train']
     n_test = args.n_test if args.n_test is not None else cfg['n_test']
     seed_train, seed_test = cfg['seeds']
-    prefix = 'uq_train' if args.mode == 'main' else 'uq_edge_train'
-    prefix_t = 'uq_test' if args.mode == 'main' else 'uq_edge_test'
+    prefix, prefix_t = 'uq_train', 'uq_test'
 
     out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'results')
     os.makedirs(out_dir, exist_ok=True)
@@ -123,9 +112,9 @@ def main():
     X_test = make_samples(n_test, cfg['centre'], np.random.default_rng(seed_test))
 
     run_ensemble(X_train, cfg['T'], os.path.join(out_dir, f'{prefix}.csv'),
-                 args.workers, seed_train, f'{args.mode}/train')
+                 args.workers, seed_train, 'train')
     run_ensemble(X_test, cfg['T'], os.path.join(out_dir, f'{prefix_t}.csv'),
-                 args.workers, seed_test, f'{args.mode}/test')
+                 args.workers, seed_test, 'test')
 
 
 if __name__ == '__main__':

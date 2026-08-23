@@ -129,7 +129,7 @@ Full results in [`results/wave_speed_sweep.csv`](results/wave_speed_sweep.csv).
 
 This repository provides the following:
 
-**D1 — Discrete lattice equations.** A documented derivation of the discrete lattice equations from first principles: force balance, the fluid equation of state, and the volume–displacement relation.
+**D1 — Discrete lattice equations.** A documented derivation of the discrete lattice equations from first principles: force balance, the fluid equation of state, and the volume–displacement relation. Written up in full in [`docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf`](docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf).
 
 **D2 — Validated Python simulation.** A validated simulation of the diaphragm–fluid system, including space-time plots and an animation showing how the system evolves over time.
 
@@ -161,7 +161,7 @@ against measured wave speeds across parameter space — at least 20 parameter co
 ├── uq_reproducible_result.ipynb   # reproducible result, tolerance ensemble, disorder
 ├── src/                           # shared simulator (run_sim) used by the scripts
 ├── scripts/                       # ensemble and sweep generators
-├── paper/                         # report drafts, appendices, bibliography
+├── paper/                         # report appendices and bibliography
 ├── docs/                          # analytical derivations
 ├── figures/                       # schematic, plots and animations
 └── results/                       # cached sweep outputs (CSV, with metadata headers)

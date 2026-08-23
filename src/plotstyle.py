@@ -220,13 +220,6 @@ def label_line(ax, line, text, frac=1.0, dx=5, dy=0, **kw):
                 fontsize=plt.rcParams['legend.fontsize'], **kw)
 
 
-def shared_legend(fig, ax, ncol=None, y=-0.02, **kw):
-    """One legend under a multi-panel figure, instead of one box per panel."""
-    handles, labels = ax.get_legend_handles_labels()
-    return fig.legend(handles, labels, loc='lower center', frameon=False,
-                      ncol=ncol or len(labels), bbox_to_anchor=(0.5, y), **kw)
-
-
 def spacetime(ax, field, times, u_lo, u_hi, cbar=True, label=r'displacement  $\tilde u_n$'):
     """Site index up the y-axis, time along x, in the two state colours."""
     im = ax.imshow(field.T, aspect='auto', origin='lower', cmap='wong_div',

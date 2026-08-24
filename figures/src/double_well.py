@@ -42,18 +42,18 @@ ax.plot(hi,  p_hi,  'o', color=WVERM,  ms=10, zorder=4)
 ax.plot(mid, p_mid, 'o', color=WGREY,  ms=7,  zorder=4)
 
 ax.annotate('low-energy state\n(the wave leaves this behind)',
-            xy=(lo, p_lo), xytext=(lo + 0.62, -0.452),
+            xy=(lo, p_lo), xytext=(lo + 0.66, -0.545),
             ha='center', va='bottom', fontsize=9, color=WGREEN,
             arrowprops=dict(arrowstyle='-', color=WGREEN, lw=0.8, alpha=0.7))
 ax.annotate('high-energy state\n(the wave arrives here)',
             xy=(hi, p_hi), xytext=(0.46, 0.075),
             ha='center', va='bottom', fontsize=9, color=WVERM,
             arrowprops=dict(arrowstyle='-', color=WVERM, lw=0.8, alpha=0.7))
-ax.annotate('unstable equilibrium', xy=(mid, p_mid), xytext=(mid - 0.52, p_mid + 0.062),
-            ha='center', fontsize=9, color=WGREY,
+ax.annotate('unstable equilibrium', xy=(mid, p_mid), xytext=(mid + 0.34, p_mid - 0.17),
+            ha='center', va='top', fontsize=9, color=WGREY,
             arrowprops=dict(arrowstyle='-', color=WGREY, lw=0.8, alpha=0.7))
 
-ax.set_xlim(-1.42, 1.42); ax.set_ylim(-0.47, 0.20)
+ax.set_xlim(-1.42, 1.42); ax.set_ylim(-0.55, 0.20)
 ax.set_xlabel(r'displacement  $\tilde u$', fontsize=12)
 ax.set_ylabel(r'on-site potential  $\tilde\psi(\tilde u)$', fontsize=12)
 ax.set_title(r'Each diaphragm sits in a double well tilted by $\Pi$', fontsize=11)

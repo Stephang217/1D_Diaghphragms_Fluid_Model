@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "1D Bistable Diaphragm Metafluid"
+abstract: >-
+  Simulation and analysis of transition waves in a one-dimensional chain of
+  bistable diaphragms coupled through compressible gas pockets obeying Boyle's
+  law. Includes the discrete lattice simulator, its reduction to four
+  dimensionless groups, a map of where the energy-balance speed formula holds,
+  and the tolerance study behind the reported wave speed.
+type: software
+authors:
+  - family-names: Gambart
+    given-names: Stephan
+    affiliation: "HetSys CDT, University of Warwick"
+license: MIT
+repository-code: "https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model"
+version: "1.0.0"
+date-released: "2026-08-24"
+keywords:
+  - metamaterials
+  - metafluid
+  - transition waves
+  - bistable lattice
+  - computational physics

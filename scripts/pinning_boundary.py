@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Is the pinning threshold width-controlled or energy-controlled?
 
 A standalone diagnostic. It prints; it does not write a CSV. The committed

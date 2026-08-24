@@ -33,6 +33,8 @@ jupyter notebook dimensionless_model.ipynb
 
 Every expensive sweep is cached as a CSV in `results/`, so the notebooks run top to bottom in minutes rather than recomputing. Set `FORCE_RERUN = True` in a notebook's setup cell to recompute instead. Reproducing the headline number needs `numpy` alone.
 
+`requirements.txt` pins the exact versions the reported results were produced with, on Python 3.14. On an older Python, or if `pip` cannot resolve a pin, change the `==` to `>=` — nothing here depends on a specific version. Note that a regenerated ensemble may then differ sample for sample, since NumPy does not guarantee its seeded stream across major versions; the committed CSVs are the exact ensembles the reported numbers came from, which is why they ship rather than being recomputed.
+
 ## The model
 
 ![Schematic of the bistable diaphragm metafluid](figures/figure.png)

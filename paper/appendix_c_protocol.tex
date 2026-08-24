@@ -1,146 +1,61 @@
 % ============================================================================
-%  Appendix C -- Reproducibility protocol
+%  Appendix C -- Code and data
 %
-%  One thing left to fill at submission: the commit hash below.  Create the tag
-%  first, then read the hash off it:
+%  Rewritten to be a pointer rather than a protocol: the reproducible-result
+%  submission is separate, so this no longer restates the reference value, the
+%  expected output, or the ensemble runtimes.
 %
+%  One thing to do at submission: create the tag, then fill the hash.
 %      git tag -a submission -m "PX915 report submission"
 %      git push origin submission
 %      git rev-parse --short submission
+%  The clone block checks out the tag, so it works even if the hash is missed.
 %
-%  The clone instructions check out the tag, so they work even if the hash line
-%  is not refreshed.  Refresh the package versions too if the environment moves.
+%  Deliberately quotes no file counts or directory sizes.  They were wrong in an
+%  earlier draft and they earn nothing.
 % ============================================================================
 
-\section{Reproducibility protocol}
-\label{app:protocol}
+\section{Code and data}
+\label{app:Appendix C}
 
-This appendix is written so that a reader who has never seen the code can
-reproduce the wave speed quoted in Section \ref{sec:uq} and check it against a
-reference value.
-
-\subsection*{What is being reproduced}
-
-The canonical result is the transition wave speed at the protocol point
+Every figure and number in this report comes from one repository,
 %
-\begin{equation*}
-  A = 1.0, \qquad \delta = 0.001, \qquad \alpha = 0.10,
-  \qquad N = 200, \qquad \Delta t = 10^{-4}, \qquad T = 400,
-\end{equation*}
+\begin{center}
+  \url{https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model}
+\end{center}
 %
-with expected value
-%
-\begin{equation*}
-  v = 0.2206 \;\pm\; 0.0001\ \text{(numerical)} \;\pm\; 0.0219\ \text{(parametric)}.
-\end{equation*}
-%
-The numerical figure is the convergence floor from Section
-\ref{sec:verification}; the parametric figure is the spread induced by
-$\pm10\%$ manufacturing tolerances on $\delta$, $A$ and $\alpha$, and is the
-number a reader reproducing a \emph{physical} device should expect to meet. A
-rerun of the code should match the reference to the numerical figure, not the
-parametric one.
-
-\subsection*{Code and environment}
-
-\begin{description}
-  \item[Repository]
-    \url{https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model}
-  \item[Release]
-    tag \texttt{submission}
-  \item[Commit]
-    \texttt{0000000} % TODO: refresh from `git rev-parse --short submission`
-  \item[Language]
-    Python 3.14.7
-  \item[Packages]
-    \texttt{numpy} 2.3.4, \texttt{pandas} 2.3.3, \texttt{matplotlib} 3.10.7,
-    \texttt{scipy} 1.16.2, \texttt{jupyter}.
-    Pinned in \texttt{requirements.txt}; install with
-    \texttt{pip install -r requirements.txt}.
-\end{description}
-
-Reproducing the headline number needs \texttt{numpy} alone. The other packages
-are needed only to read the cached ensembles and redraw the figures, and
-\texttt{scipy} only by \texttt{diaphragm\_metafluid.ipynb}, which fits a front
-width.
-
-No compiled extensions, no GPU, and no random number generation in the canonical
-run itself: the simulation is deterministic, so a correct rerun reproduces the
-reference to floating-point round-off rather than to a tolerance. Randomness
-enters only in the ensembles of Section \ref{sec:uq}, where every seed is
-recorded in the CSV header along with the package versions that ensemble was
-generated under.
-
-\subsection*{The single canonical run}
+tagged \texttt{submission} at the state these results were produced with
+(commit \texttt{<FILL IN AT SUBMISSION>}). Running it needs Python 3.14 and
+\texttt{numpy}, with \texttt{pandas} and \texttt{matplotlib} to redraw the
+figures. Exact versions are pinned in \texttt{requirements.txt}.
 
 \begin{verbatim}
     git clone https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model
     cd 1D_Diaghphragms_Fluid_Model
     git checkout submission
     pip install -r requirements.txt
-
-    python3 -c "
-    import sys; sys.path.insert(0, 'src')
-    from model import run_sim
-    v, v_pred, ratio = run_sim(A=1.0, delta=0.001, alpha=0.10,
-                               N=200, T=400, dt=1e-4)
-    print(f'v_sim={v:.6f}  v_pred={v_pred:.6f}  ratio={ratio:.6f}')
-    "
 \end{verbatim}
 
-\noindent Expected output, to be compared against
-\texttt{results/protocol\_point.csv}:
+Three notebooks carry the work. \texttt{dimensionless\_model.ipynb} holds the
+four-group results of Sections \ref{sec:Verification} to
+\ref{sec:The fluid fingerprint: compression versus rarefaction},
+\texttt{diaphragm\_metafluid.ipynb} the dimensional groundwork behind them, and
+\texttt{uq\_reproducible\_result.ipynb} the tolerance ensembles of
+Section \ref{sec:Diaphragms that differ from one another}. The simulator itself
+lives in \texttt{src/}, shared by the notebooks and by the sweep scripts in
+\texttt{scripts/}, so that every number in this report comes from one
+implementation rather than several copies of one.
 
-\begin{verbatim}
-    v_sim=0.220560  v_pred=0.220647  ratio=1.000393
-\end{verbatim}
+Sweeps taking longer than a few minutes ship as cached CSVs in
+\texttt{results/}, each carrying a header that records its seed, lattice
+settings, package versions and wall time. A notebook loads the cache when it is
+present, so all three run top to bottom in minutes; setting
+\texttt{FORCE\_RERUN = True} recomputes from scratch instead.
 
-\noindent This is a single-core run taking approximately $50$~s on the
-development machine (Apple Silicon laptop).
-
-\subsection*{Reproducing the uncertainty}
-
-The parametric band requires the ensemble rather than the single run:
-
-\begin{verbatim}
-    python3 scripts/uq_sweep.py          # 256 train + 32 test
-    python3 scripts/disorder_sweep.py    # per-diaphragm disorder
-\end{verbatim}
-
-\noindent Each script prints a projected runtime from a single timed evaluation
-before launching its pool, and writes a CSV into \texttt{results/} whose header
-records the seed, the sample count, the lattice settings, the package versions
-and the wall time. Loading them requires \texttt{comment='\#'}:
-\texttt{pd.read\_csv(path, comment='\#')}. Opening
-\texttt{uq\_reproducible\_result.ipynb} and running it top to bottom then
-regenerates the tolerance band, the $\delta A/\alpha$ collapse and the headline
-number from those CSVs.
-
-On the development machine the tolerance ensemble takes roughly $53$~min for the
-256 training samples and a further $6$~min for the 32 test samples, both across
-$8$~workers; the disorder ensemble takes about $4$~min.
-
-\subsection*{Results that ship pre-computed}
-
-Several sweeps are too slow to recompute casually and are committed as cached
-CSVs alongside the scripts that generate them, following the convention used
-throughout the notebooks: a cached file is loaded if present, and setting
-\texttt{FORCE\_RERUN = True} recomputes it.
-
-\begin{description}
-  \item[\texttt{results/pinning\_boundary.csv}]
-    the $(\kappa,\Pi)$ pinning boundary of Section \ref{sec:pinning}; five
-    bisections of seven runs each, roughly $70$~min. Regenerate with
-    \texttt{python3 scripts/pinning\_boundary.py}.
-  \item[\texttt{results/closed\_form\_validation.csv}]
-    the 160-point grid behind Appendix \ref{app:tanh}, separating the
-    energy-balance error from the $\tanh$ approximation; about $6$~min.
-    Regenerate with \texttt{python3 scripts/closed\_form\_check.py}.
-  \item[\texttt{results/alpha\_low\_windows.csv}]
-    the low-damping time-window test of Section \ref{sec:validity}; the runs at
-    the smallest $\alpha$ are long because $\tilde\tau = 2/\Omega$ is large and
-    the lattice must be sized to the faster underdamped front.
-\end{description}
-
-\noindent Every other figure in the paper recomputes from scratch in at most a
-few minutes.
+The simulation is deterministic, with no compiled extensions and no GPU, so a
+rerun reproduces the reported numbers to floating-point round-off rather than to
+a tolerance. Randomness enters only in the ensembles of
+Section \ref{sec:Diaphragms that differ from one another}, where every seed is
+recorded in the CSV header. The protocol for reproducing the wave speed of
+Section \ref{sec:Diaphragms that differ from one another} from a clean checkout,
+together with its reference value and tolerance, is submitted separately.

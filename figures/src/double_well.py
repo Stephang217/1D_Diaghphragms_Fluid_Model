@@ -21,7 +21,7 @@ lo, mid, hi = wells(PI)
 p_lo, p_hi, p_mid = psi(lo, PI), psi(hi, PI), psi(mid, PI)
 XB = 1.30                                    # where the bracket sits
 
-fig, ax = plt.subplots(figsize=(width(0.72), 3.3))
+fig, ax = plt.subplots(figsize=(width(0.72), 2.3))
 ax.plot(u, psi(u, 0.0), color='0.75', lw=1.2, ls=':', zorder=1,
         label=r'$\Pi = 0$: wells equal')
 ax.plot(u, psi(u, PI), color=WBLUE, lw=2.3, zorder=2,

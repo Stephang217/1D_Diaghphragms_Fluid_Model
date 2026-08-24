@@ -6,7 +6,7 @@ from _common import *
 T, N = 1200.0, 120
 r = run(KAPPA_C/THETA_C, THETA_C, PI, OM, N=N, T=T, save_every=500)
 
-fig, ax = plt.subplots(figsize=full(3.0))
+fig, ax = plt.subplots(figsize=(width(0.70), 2.1))
 spacetime(ax, r['frames'], r['times'], r['u_lo'], r['u_hi'])
 ax.set_title('A transition wave crossing the chain', fontsize=11)
 save_figure(fig, 'spacetime')

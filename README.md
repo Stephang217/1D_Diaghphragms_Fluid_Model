@@ -1,118 +1,62 @@
 # 1D Bistable Diaphragm Metafluid
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![Python](https://img.shields.io/badge/python-3.14-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Jupyter](https://img.shields.io/badge/Jupyter-notebook-orange.svg)
 
-Continuum and reduced-order modelling of transition waves in a fluid-coupled bistable diaphragm metafluid.
+Transition waves in a chain of bistable diaphragms coupled by compressible gas pockets.
 
-## Overview
+This is the code behind ***Transition Waves in a Fluid-Coupled Bistable Diaphragm Metafluid*** (S. Gambart, PX915 individual project, HetSys CDT, University of Warwick). Every figure and number in that report is produced here. The sections below follow the report's results, §3.1 to §3.4, so a claim in the paper can be traced to the notebook that produced it.
 
-A meta-fluid is a fluid whose macroscopic properties can be tuned by engineering its microstructure. This project studies a one-dimensional array of bistable diaphragms placed at regular intervals along a fluid-filled pipe. Each diaphragm sits in one of two stable states and is coupled to its neighbours through the pressure of the compressible fluid trapped in the segments between them. The discrete model tracks the displacement `u_n(t)` of each diaphragm `n`.
+The reproducible-result protocol — the reference wave speed and the tolerance to check it against — is submitted separately.
 
-The key behaviour is the transition wave: a localised front that propagates through the bistable elements, irreversibly switching each one from one stable state to the other while releasing or absorbing energy. Characterising when this wave propagates and how fast is the foundational question for applications in energy harvesting and storage, refrigerant-free refrigeration, mechanical signal processing, and tunable acoustic devices.
+## The wave
 
-Bistable diaphragms have previously been studied with magnetic and spring coupling, but not with fluid coupling. Fluid coupling is the novel contribution here: it is what turns the array into a metafluid. The approach is to start from the discrete lattice model, take its continuum limit, and — where that limit is valid — derive a reduced-order continuum model via asymptotics. This introductory project is restricted to 1D; the broader PhD extends it to 2D and 3D.
-
-## Schematic
-
-![Schematic of the bistable diaphragm metafluid](figures/figure.png)
-
-*Bistable diaphragms (blue) placed at regular intervals along a fluid-filled pipe. Each diaphragm is in one of two stable states (curved left or right). The compressible fluid trapped between adjacent diaphragms exerts pressure `p_n` on both bounding diaphragms. A transition wave propagates to the right, switching each diaphragm from one stable state to the other.*
-
-<details>
-<summary>LaTeX / TikZ source for the figure</summary>
-
-```latex
-\documentclass[border=2pt]{standalone}
-\usepackage{graphicx} % Required for inserting images
-\usepackage{tikz}
-\usepackage{xcolor}
-\definecolor{wongblue}{RGB}{0, 114, 178}
-\definecolor{wongorange}{RGB}{230, 159, 0}
-\definecolor{wonggrey}{RGB}{100, 100, 100}
-
-\begin{document}
-
-\begin{tikzpicture}[scale=1]
-    % pipe walls
-    \draw[thick] (0, 1.5) -- (12, 1.5);
-    \draw[thick] (0, -1.5) -- (12, -1.5);
-    
-    % diaphragms - some bent right (behind wave, snapped), some bent left (ahead of wave)
-    % "snapped" diaphragms behind the wave: bent right (curve opens left)
-    \draw[thick, wongblue] (1, -1.5) .. controls (1.5, -0.5) and (1.5, 0.5) .. (1, 1.5);
-    \draw[thick, wongblue] (3, -1.5) .. controls (3.5, -0.5) and (3.5, 0.5) .. (3, 1.5);
-    \draw[thick, wongblue] (5, -1.5) .. controls (5.5, -0.5) and (5.5, 0.5) .. (5, 1.5);
-    
-    % "unsnapped" diaphragms ahead of the wave: bent left (curve opens right)
-    \draw[thick, wongblue] (7, -1.5) .. controls (6.5, -0.5) and (6.5, 0.5) .. (7, 1.5);
-    \draw[thick, wongblue] (9, -1.5) .. controls (8.5, -0.5) and (8.5, 0.5) .. (9, 1.5);
-    \draw[thick, wongblue] (11, -1.5) .. controls (10.5, -0.5) and (10.5, 0.5) .. (11, 1.5);
-    
-    % diaphragm labels (under)
-    \node at (1, -1.9) {\small $n-2$};
-    \node at (3, -1.9) {\small $n-1$};
-    \node at (5, -1.9) {\small $n$};
-    \node at (7, -1.9) {\small $n+1$};
-    \node at (9, -1.9) {\small $n+2$};
-    \node at (11, -1.9) {\small $n+3$};
-    
-    % pressure labels with arrows pointing into the segments
-    \node at (2, 0) {$p_{n-1}$};
-    \draw[->, thick, wonggrey] (1.7, 0.3) -- (1.3, 0.3);
-    \draw[->, thick, wonggrey] (2.3, 0.3) -- (2.7, 0.3);
-    
-    \node at (4, 0) {$p_n$};
-    \draw[->, thick, wonggrey] (3.7, 0.3) -- (3.3, 0.3);
-    \draw[->, thick, wonggrey] (4.3, 0.3) -- (4.7, 0.3);
-    
-    \node at (6, 0) {$p_{n+1}$};
-    \draw[->, thick, wonggrey] (5.7, 0.3) -- (5.3, 0.3);
-    \draw[->, thick, wonggrey] (6.3, 0.3) -- (6.7, 0.3);
-    
-    \node at (8, 0) {$p_{n+2}$};
-    \draw[->, thick, wonggrey] (7.7, 0.3) -- (7.3, 0.3);
-    \draw[->, thick, wonggrey] (8.3, 0.3) -- (8.7, 0.3);
-    
-    \node at (10, 0) {$p_{n+3}$};
-    \draw[->, thick, wonggrey] (9.7, 0.3) -- (9.3, 0.3);
-    \draw[->, thick, wonggrey] (10.3, 0.3) -- (10.7, 0.3);
-    
-    % wave direction arrow above the pipe
-    \draw[->, very thick, wongorange] (4, 2.2) -- (8, 2.2);
-    \node at (6, 2.6) {transition wave};
-    
-\end{tikzpicture}
-
-\end{document}
-
-
-```
-
-</details>
-
-## Simulation
-
-The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.009, \alpha=0.05, \Delta t=10^{-4}$):
+A transition wave crossing 120 diaphragms. Each one snaps from its high-energy state to its low-energy state as the front arrives, and the energy released drives the front onward ($A=1$, $\delta=0.009$, $\alpha=0.05$, $\Delta t=10^{-4}$):
 
 ![Transition wave animation](figures/wave_animation.gif)
 
-**Effect of damping** — underdamped ($\alpha=0.01$, left) vs overdamped ($\alpha=0.30$, right). At low damping, diaphragms ring down after snapping, creating an oscillatory wake. At high damping, each snap is clean and the front is sharp:
+Damping decides what the wake looks like. Underdamped ($\alpha=0.01$, left) the diaphragms ring down after snapping and leave an oscillatory tail; overdamped ($\alpha=0.30$, right) each snap is clean and the front is sharp:
 
 ![Damping comparison](figures/wave_comparison.gif)
 
+These are the two things a space-time diagram cannot show, which is why the report points here for them.
+
+## Getting started
+
+```bash
+git clone https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model
+cd 1D_Diaghphragms_Fluid_Model
+pip install -r requirements.txt
+jupyter notebook dimensionless_model.ipynb
+```
+
+Every expensive sweep is cached as a CSV in `results/`, so the notebooks run top to bottom in minutes rather than recomputing. Set `FORCE_RERUN = True` in a notebook's setup cell to recompute instead. Reproducing the headline number needs `numpy` alone.
+
+## The model
+
+![Schematic of the bistable diaphragm metafluid](figures/figure.png)
+
+Bistable diaphragms (blue) sit at regular intervals along a fluid-filled pipe, each sealing a pocket of gas from its neighbour. The gas obeys Boyle's law, so when a diaphragm snaps it compresses the pocket ahead and can trigger the next one. Each diaphragm has a cubic restoring force, giving a double-well potential whose slight asymmetry is the energy the wave spends.
+
+Eight physical parameters reduce to four dimensionless groups,
+
+$$\eta = \frac{A p_0}{k a^3}, \qquad \theta = \frac{A a}{V_0}, \qquad \Pi = \frac{\delta}{a^3}, \qquad \Omega = \frac{\alpha}{a\sqrt{mk}},$$
+
+and the gas force factorises exactly into a linear spring of stiffness $\kappa = \eta\theta$ times a Boyle correction. That split is what separates the spring-like part of the coupling from the part only a fluid can produce. ([TikZ source for the schematic](figures/src/schematic.tex).)
+
 ## Key results
 
-- **Four-group reduction.** The dynamics depend on exactly four dimensionless numbers $(\eta, \theta, \Pi, \Omega)$. Two physical systems built with deliberately unlike dimensional parameters but matched groups produce trajectories agreeing to $10^{-14}$ — integrator round-off, not a modelling residual.
-- **Where the speed formula works.** The controlling quantity is the front width in lattice spacings, $w = \sqrt{2\eta\theta}$. The energy-balance prediction is accurate to $0.2\%$ once the front spans three sites and to $1.2\%$ down to two, degrading to $43\%$ at one site where the travelling profile it assumes is no longer resolved.
-- **Pinning is a lattice effect.** At canonical coupling, weakening the *drive* never stalls the wave — speed falls in proportion to $\delta$ over two decades with no threshold. That is a statement about a four-site front rather than about drive: narrow the front and a drive threshold appears too. Weakening the *coupling* stalls it directly: below $\eta\theta \approx 0.3$ the front freezes, verified stationary to machine precision over a twenty-fold span of run time. The threshold is not a fixed width but follows $w_c = 0.085 - 0.303\ln\Pi$ ($R^2 = 0.96$), the signature of a barrier exponential in width competing against the energy released per snap.
-- **The fluid fingerprint.** Waves that compress the gas pockets run faster than their mirror image that stretches them — $2.7\%$ at $\theta = 0.1$, $11.3\%$ at $\theta = 0.4$, $215\%$ at $\theta = 4$, close to linear only while $\theta$ is small and never saturating. A spring chain gives identically zero, so this is the signature of the gas coupling specifically. The sweep ends between $\theta = 7.5$ and $7.75$ where the stretching wave pins, at the same front width the coupling sweep arrests at — so the fingerprint and the pinning threshold are one result along two axes.
-- **Reproducible result.** $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0219$ (parametric) at the protocol point. Per-diaphragm disorder self-averages and contributes an order of magnitude less than a uniform batch offset.
+**§3.1 — The four-group reduction is exact.** Two systems built with deliberately unlike dimensional parameters but matched groups, integrated alongside the dimensionless equation itself, agree to $1.0\times10^{-14}$ in the maximum norm over the whole run. That is integrator round-off at double precision, not a modelling residual.
 
-> **Superseded results.** Earlier versions of this README reported that post-snap ringing accounts for ~34% of dissipation and is the reason the formula overpredicts at low damping, and that volume collapse above $A \approx 1.8$ stalls the wave. Both were later overturned by better-sized tests. In steady state the ringing wake carries only a few percent of the dissipation, and the low-damping overprediction survives long after the ringing has fully decayed — it is a genuine steady-state effect (neglected front inertia and lattice radiation), not a measurement artefact. The $A$ limit did not reproduce once the damping and initial conditions were corrected.
+**§3.2 — Front width is the gate.** The coupling reaches the wave only through $\kappa = \eta\theta$, which sets the front width $w = \sqrt{2\kappa}$ in lattice spacings. The energy-balance speed formula is accurate to $0.2\%$ wherever the front spans three sites or more and to $1.2\%$ down to two, degrading quickly below that as the lattice stops resolving the profile the formula integrates over. Narrow the front further and the wave stops outright: between $\kappa = 0.30$ and $0.34$, at widths of $0.78$ and $0.83$ spacings, Peierls–Nabarro pinning arrests it. Weakening the *drive* never does this at canonical coupling — the barrier is what moves, not the supply.
 
-### Wave-speed sweep (selected results, 45 combinations total)
+**§3.3 — Compression and rarefaction differ, and that is the fluid's signature.** A wave that squeezes the pockets runs faster than its mirror image that stretches them: $2.7\%$ at $\theta = 0.1$, $11.3\%$ at $\theta = 0.4$, $215\%$ at $\theta = 4$, with no plateau. Under spring coupling the gap is identically zero. It ends where the stretching wave pins, between $\theta = 7.5$ and $7.75$, with its front $0.80$ spacings across — the same width the coupling sweep arrests at. The fingerprint and the pinning threshold are one mechanism seen along two axes.
+
+**§3.4 — How well the speed is known.** At the protocol point, $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0219$ (parametric). The parametric band is a $9.9\%$ spread from $\pm10\%$ manufacturing tolerances on $\delta$, $A$ and $\alpha$, which lands close to the input tolerance because the closed form reduces to $v \propto \delta A/\alpha$, each to the first power. Dividing that dependence out collapses the spread to $0.45\%$. Per-diaphragm disorder is a separate and much smaller effect: it self-averages over the many sites a front spans, contributing about an eleventh of what the same tolerance does when it displaces the whole chain.
+
+<details>
+<summary>Wave-speed sweep — 6 of 45 combinations</summary>
 
 | $A$ | $\delta$ | $\alpha$ | $v_{sim}$ | $v_{pred}$ | ratio |
 |---|---|---|---|---|---|
@@ -123,70 +67,44 @@ The transition wave propagating through 120 diaphragms ($N=120, A=1, \delta=0.00
 | 0.5 | 0.009 | 0.02 | 0.4655 | 1.2096 | 2.60 |
 | 2.0 | 0.009 | 0.02 | 0.3052 | 9.0168 | 29.55 |
 
-Full results in [`results/wave_speed_sweep.csv`](results/wave_speed_sweep.csv).
+In groups these six span $\Omega = 0.067$ to $0.333$ and $\Pi = 0.037$ to $0.333$. The rows where the ratio holds are the well-damped ones; the three that degrade are at $\Omega \le 0.167$ and strong drive, which is the low-damping corner §3.2 identifies. Front width is not what fails here — the worst row has the widest front of the six. Full results in [`results/wave_speed_sweep.csv`](results/wave_speed_sweep.csv).
 
-## Deliverables
+</details>
 
-This repository provides the following:
+## What's here
 
-**D1 — Discrete lattice equations.** A documented derivation of the discrete lattice equations from first principles: force balance, the fluid equation of state, and the volume–displacement relation. Written up in full in [`docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf`](docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf).
+| notebook | what it holds |
+|---|---|
+| [`dimensionless_model.ipynb`](dimensionless_model.ipynb) | the four-group results of §3.1–§3.3: verification, the validity map, pinning, and the squeeze/stretch gap |
+| [`uq_reproducible_result.ipynb`](uq_reproducible_result.ipynb) | §3.4: the protocol point, the tolerance ensemble and the per-diaphragm disorder study |
+| [`diaphragm_metafluid.ipynb`](diaphragm_metafluid.ipynb) | the dimensional groundwork the above is built on — the raw $A$, $\delta$, $\alpha$ sweeps, the energy audit and the ringing physics. Produces no report figure. |
 
-**D2 — Validated Python simulation.** A validated simulation of the diaphragm–fluid system, including space-time plots and an animation showing how the system evolves over time.
-
-**D3 — Wave speed comparison.** A quantitative comparison of the wave speed predicted by Arrieta's continuum energy balance,
-
-$$
-\begin{equation}
-v = \frac{\psi(u_{\text{hi}}) - \psi(u_{\text{lo}})}{\gamma \int_{-\infty}^{\infty} \left(\frac{du}{d\xi}\right)^2 d\xi}
-\end{equation}
-$$
-
-against measured wave speeds across parameter space — at least 20 parameter combinations spanning the coupling strength `A`, the asymmetry of the bistable potential `δ`, and the damping `α` — with the ratio `v_pred / v_sim` properly tested for uncertainties.
-
-**D4 — Continuum-validity diagnostic.** A diagnostic curve characterising where the continuum approximation holds, identifying a threshold above which the comparison to the formula above accurately predicts the measured wave speed.
-
-**D5 — Kink-width formula.** An analytical kink-width formula derived from the reduced-order continuum PDE.
-
-**Stretch goal.** If all of the above are met, extend the model to 2D.
-
-## Repository structure
+The simulator lives in `src/` and is shared by the notebooks and by the sweep scripts in `scripts/`, so every number comes from one implementation. The full derivation of the discrete model is in [`docs/`](docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf).
 
 ```
 .
-├── README.md
-├── LICENSE
-├── requirements.txt
-├── diaphragm_metafluid.ipynb      # dimensional model: validation, sweeps, dissipation
 ├── dimensionless_model.ipynb      # four groups: validity map, pinning, gas-vs-spring
 ├── uq_reproducible_result.ipynb   # reproducible result, tolerance ensemble, disorder
-├── src/                           # shared simulator (run_sim) used by the scripts
+├── diaphragm_metafluid.ipynb      # dimensional groundwork
+├── src/                           # shared simulator, gradient stencil, plotting style
 ├── scripts/                       # ensemble and sweep generators
+├── figures/                       # plots, animations, and the sources for those no notebook makes
+├── results/                       # cached sweep outputs (CSV, with metadata headers)
 ├── paper/                         # report appendices and bibliography
-├── docs/                          # analytical derivations
-├── figures/                       # schematic, plots and animations
-└── results/                       # cached sweep outputs (CSV, with metadata headers)
+└── docs/                          # analytical derivations
 ```
 
-## Getting started
+## Superseded results
 
-```bash
-pip install -r requirements.txt
-jupyter notebook diaphragm_metafluid.ipynb
-```
-
-Every expensive sweep is cached in `results/`, so the notebooks run top to bottom in
-minutes without recomputing them; set `FORCE_RERUN = True` in a notebook's setup cell
-to regenerate instead of load. The two slowest (`pinning_boundary.csv`, ~70 min, and
-the low-damping window test) ship pre-computed with the scripts that generate them.
-`paper/appendix_c_protocol.tex` gives the exact command to reproduce the headline wave
-speed and the reference value to check it against.
+Earlier versions of this README reported that post-snap ringing accounts for ~34% of dissipation and is why the formula overpredicts at low damping, and that volume collapse above $A \approx 1.8$ stalls the wave. Better-sized tests overturned both. In steady state the ringing wake carries only a few percent of the dissipation, and the low-damping overprediction survives long after the ringing has fully decayed, so it is a genuine steady-state effect — neglected front inertia and lattice radiation — rather than a measurement artefact. The $A$ limit did not reproduce once the damping and initial conditions were corrected.
 
 ## References
 
 1. N. Nadkarni, A. F. Arrieta, C. Chong, D. M. Kochmann, C. Daraio. *Unidirectional transition waves in bistable lattices.* Physical Review Letters, 116(24):244501, 2016.
-2. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *A metafluid with multistable density and internal energy states.* Nature Communications, 13(1):1810, 2022.
-3. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *Multistable metafluid based energy harvesting and storage.* Advanced Materials, 35(35):2301483, 2023.
+2. M. Hwang, A. F. Arrieta. *Input-independent energy harvesting in bistable lattices from transition waves.* Scientific Reports, 8:3630, 2018.
+3. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *Multistable metafluid based energy harvesting and storage.* Advanced Materials, 35:2301483, 2023.
 4. J. R. Raney, N. Nadkarni, C. Daraio, D. M. Kochmann, J. A. Lewis, K. Bertoldi. *Stable propagation of mechanical signals in soft media using stored elastic energy.* PNAS, 113(35):9722–9727, 2016.
+5. G. Puglisi, L. Truskinovsky. *Mechanics of a discrete chain with bi-stable elements.* Journal of the Mechanics and Physics of Solids, 48(1):1–27, 2000.
 
 ## License
 

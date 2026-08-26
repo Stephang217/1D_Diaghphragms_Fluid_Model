@@ -36,8 +36,12 @@ def save_figure(fig, name):
     os.makedirs(d, exist_ok=True)
     stashed, sup = ([], '') if TITLES_IN_SAVED_FIGURES else _strip_titles(fig)
     _layout(fig)
-    path = os.path.join(d, name if name.endswith('.png') else name + '.png')
-    fig.savefig(path, dpi=200, bbox_inches='tight', pad_inches=0.02)
+    stem = name[:-4] if name.endswith('.png') else name
+    path = os.path.join(d, stem + '.png')
+    # PDF for the report (vector), PNG for the README (GitHub cannot show a PDF).
+    for ext in ('.png', '.pdf'):
+        fig.savefig(os.path.join(d, stem + ext), dpi=200,
+                    bbox_inches='tight', pad_inches=0.02)
     for ax, t in stashed:
         ax.set_title(t)
     if sup:

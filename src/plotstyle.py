@@ -132,6 +132,12 @@ def use(base=9.0, serif=True, titles_in_saved_figures=False):
         'savefig.bbox':      'tight',
         'savefig.pad_inches': 0.02,
 
+        # TrueType, not matplotlib's default Type 3. Type 3 renders badly in
+        # some viewers and several journals refuse it; 42 also keeps the text
+        # in the vector output selectable and searchable.
+        'pdf.fonttype':      42,
+        'ps.fonttype':       42,
+
         'font.size':         base,
         'axes.labelsize':    base + 1,
         'axes.titlesize':    base + 1,
@@ -192,10 +198,15 @@ def save(fig, name, dpi=DPI, titles=None):
     keep = TITLES_IN_SAVED_FIGURES if titles is None else titles
     stashed, sup = ([], '') if keep else _strip_titles(fig)
     _layout(fig)
-    if not name.endswith('.png'):
-        name += '.png'
-    path = os.path.normpath(os.path.join(FIG_DIR, name))
-    fig.savefig(path, dpi=dpi, bbox_inches='tight', pad_inches=0.02)
+    stem = name[:-4] if name.endswith('.png') else name
+    path = os.path.normpath(os.path.join(FIG_DIR, stem + '.png'))
+    # Both formats, deliberately. The PDF is what the report includes -- vector,
+    # so the axis text and thin lines stay sharp at any zoom, and \includegraphics
+    # picks it over the PNG without being told. The PNG is what GitHub renders in
+    # the README, which cannot display a PDF.
+    for ext in ('.png', '.pdf'):
+        fig.savefig(os.path.normpath(os.path.join(FIG_DIR, stem + ext)),
+                    dpi=dpi, bbox_inches='tight', pad_inches=0.02)
     if stashed or sup:
         for ax, t in stashed:
             ax.set_title(t)

@@ -1,14 +1,18 @@
 # Pinned to the environment the reported results were produced in, so Appendix C
 # can quote exact versions and mean it. Developed on Python 3.14.7.
 #
-# Reproducing the headline result needs numpy and jupyter only. The command in
-# Appendix C is
-#     jupyter nbconvert --to notebook --execute uq_reproducible_result.ipynb
-# which additionally uses pandas and matplotlib to read the cached ensembles and
-# draw the figures.
+# Reproducing the headline result needs numpy alone:
+#     python3 scripts/reproduce.py
+# That script runs one simulation at the protocol point and checks it against the
+# reference value. It imports nothing outside numpy on purpose, so a broken
+# Jupyter install cannot make a reproduced result look like a failed one.
 #
-# Regenerating the ensembles needs less again: scripts/uq_sweep.py and
-# src/model.py import numpy and nothing else.
+# The fuller route also redraws the figures and reads the cached ensembles, and
+# needs jupyter, pandas and matplotlib:
+#     jupyter nbconvert --to notebook --execute uq_reproducible_result.ipynb
+#
+# Regenerating the ensembles needs numpy alone again: scripts/uq_sweep.py and
+# src/model.py import nothing else.
 #
 # Loosen to >= on an older Python. Note that the seeded RNG stream is
 # not guaranteed identical across numpy major versions, so a regenerated ensemble
@@ -18,9 +22,11 @@
 numpy==2.3.4
 pandas==2.3.3
 matplotlib==3.10.7
-jupyter
 
-# Only for diaphragm_metafluid.ipynb, which fits a tanh front width with
-# scipy.optimize.curve_fit. Nothing else in the repository imports scipy, and it
-# is not needed to reproduce any reported number.
+# Deliberately unpinned, and deliberately below the line. Nothing jupyter does
+# reaches a reported number -- it only executes notebooks that call the same
+# src/ simulator the scripts call -- so pinning it would imply a dependence that
+# is not there. Same for scipy, which only diaphragm_metafluid.ipynb uses, to fit
+# a tanh front width with scipy.optimize.curve_fit.
+jupyter
 scipy==1.16.2

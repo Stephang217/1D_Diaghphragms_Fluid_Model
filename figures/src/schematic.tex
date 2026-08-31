@@ -5,6 +5,10 @@
 %   pdflatex schematic.tex
 %   magick -density 300 schematic.pdf -quality 95 ../figure.png
 %
+% or, without ImageMagick:
+%
+%   pdftoppm -r 300 -png -singlefile schematic.pdf ../figure
+%
 \documentclass[tikz,border=4pt]{standalone}
 \usepackage{tikz}
 \usepackage{xcolor}
@@ -16,50 +20,52 @@
 \begin{document}
 \begin{tikzpicture}[scale=1]
     % pipe walls
-    \draw[thick] (0, 1.5) -- (12, 1.5);
-    \draw[thick] (0, -1.5) -- (12, -1.5);
+    \draw[thick] (0, 1.5) -- (14, 1.5);
+    \draw[thick] (0, -1.5) -- (14, -1.5);
 
     % switched diaphragms behind the wave: bent right
-    \draw[thick, wongblue] (1, -1.5) .. controls (1.5, -0.5) and (1.5, 0.5) .. (1, 1.5);
-    \draw[thick, wongblue] (3, -1.5) .. controls (3.5, -0.5) and (3.5, 0.5) .. (3, 1.5);
-    \draw[thick, wongblue] (5, -1.5) .. controls (5.5, -0.5) and (5.5, 0.5) .. (5, 1.5);
+    \draw[thick, wongblue] (1,    -1.5) .. controls (1.5,  -0.5) and (1.5,  0.5) .. (1,    1.5);
+    \draw[thick, wongblue] (3.4,  -1.5) .. controls (3.9,  -0.5) and (3.9,  0.5) .. (3.4,  1.5);
+    \draw[thick, wongblue] (5.8,  -1.5) .. controls (6.3,  -0.5) and (6.3,  0.5) .. (5.8,  1.5);
 
     % unswitched diaphragms ahead of the wave: bent left
-    \draw[thick, wongblue] (7, -1.5) .. controls (6.5, -0.5) and (6.5, 0.5) .. (7, 1.5);
-    \draw[thick, wongblue] (9, -1.5) .. controls (8.5, -0.5) and (8.5, 0.5) .. (9, 1.5);
-    \draw[thick, wongblue] (11, -1.5) .. controls (10.5, -0.5) and (10.5, 0.5) .. (11, 1.5);
+    \draw[thick, wongblue] (8.2,  -1.5) .. controls (7.7,  -0.5) and (7.7,  0.5) .. (8.2,  1.5);
+    \draw[thick, wongblue] (10.6, -1.5) .. controls (10.1, -0.5) and (10.1, 0.5) .. (10.6, 1.5);
+    \draw[thick, wongblue] (13,   -1.5) .. controls (12.5, -0.5) and (12.5, 0.5) .. (13,   1.5);
 
     % diaphragm labels
-    \node at (1, -1.9) {\small $n-2$};
-    \node at (3, -1.9) {\small $n-1$};
-    \node at (5, -1.9) {\small $n$};
-    \node at (7, -1.9) {\small $n+1$};
-    \node at (9, -1.9) {\small $n+2$};
-    \node at (11, -1.9) {\small $n+3$};
+    \node at (1,    -1.9) {\small $n-2$};
+    \node at (3.4,  -1.9) {\small $n-1$};
+    \node at (5.8,  -1.9) {\small $n$};
+    \node at (8.2,  -1.9) {\small $n+1$};
+    \node at (10.6, -1.9) {\small $n+2$};
+    \node at (13,   -1.9) {\small $n+3$};
 
-    % pocket pressures, arrows pushing on both bounding diaphragms
-    \node at (2, 0) {$p_{n-1}$};
-    \draw[->, thick, wonggrey] (1.7, 0.3) -- (1.3, 0.3);
-    \draw[->, thick, wonggrey] (2.3, 0.3) -- (2.7, 0.3);
+    % Pocket pressures on the centreline, each flanked by its own pair of arrows.
+    % A diaphragm drawn from (x, -1.5) with controls at x +/- 0.5 has its apex at
+    % x +/- 0.375, so the pocket between two of them spans apex to apex and the
+    % label sits at that midpoint. Arrows leave the label node's own anchors, so
+    % they cannot run under the text. Pocket n+1 is the compressed one, squeezed
+    % from both sides, and its arrows come out short for that reason.
+    \node[inner sep=1.5pt] (pa) at (2.575, 0) {\small $p_{n-1}$};
+    \node[inner sep=1.5pt] (pb) at (4.975, 0) {\small $p_{n}$};
+    \node[inner sep=1.5pt] (pc) at (7.000, 0) {\small $p_{n+1}$};
+    \node[inner sep=1.5pt] (pd) at (9.025, 0) {\small $p_{n+2}$};
+    \node[inner sep=1.5pt] (pe) at (11.425,0) {\small $p_{n+3}$};
 
-    \node at (4, 0) {$p_n$};
-    \draw[->, thick, wonggrey] (3.7, 0.3) -- (3.3, 0.3);
-    \draw[->, thick, wonggrey] (4.3, 0.3) -- (4.7, 0.3);
-
-    \node at (6, 0) {$p_{n+1}$};
-    \draw[->, thick, wonggrey] (5.7, 0.3) -- (5.3, 0.3);
-    \draw[->, thick, wonggrey] (6.3, 0.3) -- (6.7, 0.3);
-
-    \node at (8, 0) {$p_{n+2}$};
-    \draw[->, thick, wonggrey] (7.7, 0.3) -- (7.3, 0.3);
-    \draw[->, thick, wonggrey] (8.3, 0.3) -- (8.7, 0.3);
-
-    \node at (10, 0) {$p_{n+3}$};
-    \draw[->, thick, wonggrey] (9.7, 0.3) -- (9.3, 0.3);
-    \draw[->, thick, wonggrey] (10.3, 0.3) -- (10.7, 0.3);
+    \draw[->, thick, wonggrey] ([xshift=-3pt]pa.west) -- (1.45,  0);
+    \draw[->, thick, wonggrey] ([xshift=3pt]pa.east)  -- (3.70,  0);
+    \draw[->, thick, wonggrey] ([xshift=-3pt]pb.west) -- (3.85,  0);
+    \draw[->, thick, wonggrey] ([xshift=3pt]pb.east)  -- (6.10,  0);
+    \draw[->, thick, wonggrey] ([xshift=-3pt]pc.west) -- (6.25,  0);
+    \draw[->, thick, wonggrey] ([xshift=3pt]pc.east)  -- (7.75,  0);
+    \draw[->, thick, wonggrey] ([xshift=-3pt]pd.west) -- (7.90,  0);
+    \draw[->, thick, wonggrey] ([xshift=3pt]pd.east)  -- (10.15, 0);
+    \draw[->, thick, wonggrey] ([xshift=-3pt]pe.west) -- (10.30, 0);
+    \draw[->, thick, wonggrey] ([xshift=3pt]pe.east)  -- (12.55, 0);
 
     % direction of travel
-    \draw[->, very thick, wongorange] (4, 2.2) -- (8, 2.2);
-    \node at (6, 2.6) {transition wave};
+    \draw[->, very thick, wongorange] (5, 2.2) -- (9, 2.2);
+    \node at (7, 2.6) {transition wave};
 \end{tikzpicture}
 \end{document}

@@ -117,17 +117,17 @@ Earlier versions of this README reported that post-snap ringing accounts for ~34
 
 The report's bibliography, in the same order.
 
-1. E. Ben-Abu et al. *Magnetic control of metafluids for fluid-like applications of metamaterials.* Materials Today Physics, 59:101927, 2025. [doi](https://doi.org/10.1016/j.mtphys.2025.101927)
+1. E. Ben-Abu, A. Zigelman, S. Givli, A. D. Gat. *Magnetic control of metafluids for fluid-like applications of metamaterials.* Materials Today Physics, 59:101927, 2025. [doi](https://doi.org/10.1016/j.mtphys.2025.101927)
 2. A. Djellouli, B. Van Raemdonck, Y. Wang, Y. Yang, A. Caillaud, D. Weitz, S. Rubinstein, B. Gorissen, K. Bertoldi. *Shell buckling for programmable metafluids.* Nature, 628:545–550, 2024. [doi](https://doi.org/10.1038/s41586-024-07163-z)
 3. O. Duncan, M. A. Dias, A. Alderson, et al. *Roadmap on mechanical metamaterials.* Smart Materials and Structures, 2026 (in press). [doi](https://doi.org/10.1088/1361-665X/ae9c0d)
 4. C. R. Harris, K. J. Millman, S. J. van der Walt, et al. *Array programming with NumPy.* Nature, 585:357–362, 2020. [doi](https://doi.org/10.1038/s41586-020-2649-2)
 5. M. Hwang, A. F. Arrieta. *Input-independent energy harvesting in bistable lattices from transition waves.* Scientific Reports, 8:3630, 2018. [doi](https://doi.org/10.1038/s41598-018-22003-7)
-6. W. Jiao et al. *Phase transitions in 2D multistable mechanical metamaterials via collisions of soliton-like pulses.* Nature Communications, 15(1):333, 2024. [doi](https://doi.org/10.1038/s41467-023-44293-w)
+6. W. Jiao, H. Shu, V. Tournat, H. Yasuda, J. R. Raney. *Phase transitions in 2D multistable mechanical metamaterials via collisions of soliton-like pulses.* Nature Communications, 15(1):333, 2024. [doi](https://doi.org/10.1038/s41467-023-44293-w)
 7. N. Nadkarni, C. Daraio, D. M. Kochmann. *Dynamics of periodic mechanical structures containing bistable elastic elements: from elastic to solitary wave propagation.* Physical Review E, 90(2):023204, 2014. [doi](https://doi.org/10.1103/PhysRevE.90.023204)
 8. N. Nadkarni, A. F. Arrieta, C. Chong, D. M. Kochmann, C. Daraio. *Unidirectional transition waves in bistable lattices.* Physical Review Letters, 116(24):244501, 2016. [doi](https://doi.org/10.1103/PhysRevLett.116.244501)
-9. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *Multistable metafluid based energy harvesting and storage.* Advanced Materials, 35:2301483, 2023.
+9. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *Multistable metafluid based energy harvesting and storage.* Advanced Materials, 35:2301483, 2023. [doi](https://doi.org/10.1002/adma.202301483)
 10. G. Puglisi, L. Truskinovsky. *Mechanics of a discrete chain with bi-stable elements.* Journal of the Mechanics and Physics of Solids, 48(1):1–27, 2000. [doi](https://doi.org/10.1016/S0022-5096(99)00006-X)
-11. J. R. Raney et al. *Stable propagation of mechanical signals in soft media using stored elastic energy.* PNAS, 113(35):9722–9727, 2016. [doi](https://doi.org/10.1073/pnas.1604838113)
+11. J. R. Raney, N. Nadkarni, C. Daraio, D. M. Kochmann, J. A. Lewis, R. J. Wood. *Stable propagation of mechanical signals in soft media using stored elastic energy.* PNAS, 113(35):9722–9727, 2016. [doi](https://doi.org/10.1073/pnas.1604838113)
 12. L. I. Slepyan. *Models and Phenomena in Fracture Mechanics.* Springer, Berlin, 2002. [doi](https://doi.org/10.1007/978-3-540-48010-5)
 13. L. Truskinovsky, A. Vainchtein. *Kinetics of martensitic phase transitions: lattice model.* SIAM Journal on Applied Mathematics, 66(2):533–553, 2005. [doi](https://doi.org/10.1137/040616942)
 

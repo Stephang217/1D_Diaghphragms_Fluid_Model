@@ -6,7 +6,7 @@
 
 Transition waves in a chain of bistable diaphragms coupled by compressible gas pockets.
 
-This is the code behind ***Transition Waves in a Fluid-Coupled Bistable Diaphragm Metafluid*** (S. Gambart, PX915 individual project, HetSys CDT, University of Warwick). Every figure and number in that report is produced here. The sections below follow the report's results, §3.1 to §3.4, so a claim in the paper can be traced to the notebook that produced it.
+This is the code behind ***Transition Waves in a Fluid-Coupled Bistable Diaphragm Metafluid*** (S. Gambart, PX915 individual project, HetSys CDT, University of Warwick). Every figure and number in that report is produced here. The sections below follow the report's results, §3.1 to §3.4, so a claim in the paper can be traced to the code that produced it.
 
 The reproducible-result protocol — the reference wave speed, the tolerance to check it against, and the equations, method and measurement procedure behind them — is Appendix C of the report. [`scripts/reproduce.py`](scripts/reproduce.py) runs that check here, and it needs `numpy` alone. The three notebooks are the analysis behind the report rather than the check.
 
@@ -88,8 +88,9 @@ In groups these six span $\Omega = 0.067$ to $0.333$ and $\Pi = 0.037$ to $0.333
 
 ## What's here
 
-| notebook | what it holds |
+| file | what it holds |
 |---|---|
+| [`scripts/reproduce.py`](scripts/reproduce.py) | **the reproducible-result check.** One run at the protocol point against the recorded reference. Needs `numpy` alone |
 | [`dimensionless_model.ipynb`](dimensionless_model.ipynb) | the four-group results of §3.1–§3.3: verification, the validity map, pinning, and the squeeze/stretch gap |
 | [`uq_reproducible_result.ipynb`](uq_reproducible_result.ipynb) | §3.4: the protocol point, the tolerance ensemble and the per-diaphragm disorder study |
 | [`diaphragm_metafluid.ipynb`](diaphragm_metafluid.ipynb) | the dimensional groundwork the above is built on — the raw $A$, $\delta$, $\alpha$ sweeps, the energy audit and the ringing physics. Produces no report figure. |
@@ -99,10 +100,10 @@ The simulator lives in `src/` and is shared by the notebooks, by the sweep scrip
 ```
 .
 ├── dimensionless_model.ipynb      # four groups: validity map, pinning, gas-vs-spring
-├── uq_reproducible_result.ipynb   # reproducible result, tolerance ensemble, disorder
+├── uq_reproducible_result.ipynb   # tolerance ensemble and per-site disorder study
 ├── diaphragm_metafluid.ipynb      # dimensional groundwork
 ├── src/                           # shared simulator, gradient stencil, plotting style
-├── scripts/                       # ensemble and sweep generators, and the reproducible-result check
+├── scripts/                       # reproduce.py (the check), plus ensemble and sweep generators
 ├── figures/                       # plots, animations, and the sources for those no notebook makes
 ├── results/                       # cached sweep outputs (CSV, with metadata headers)
 ├── paper/                         # report appendices and bibliography

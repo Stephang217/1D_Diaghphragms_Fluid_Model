@@ -62,7 +62,7 @@ and the gas force factorises exactly into a linear spring of stiffness $\kappa =
 
 **§3.1 — The four-group reduction is exact.** Two systems built with deliberately unlike dimensional parameters but matched groups, integrated alongside the dimensionless equation itself, agree to $1.0\times10^{-14}$ in the maximum norm over the whole run. That is integrator round-off at double precision, not a modelling residual.
 
-**§3.2 — Front width is the gate.** The coupling reaches the wave only through $\kappa = \eta\theta$, which sets the front width $w = \sqrt{2\kappa}$ in lattice spacings. The energy-balance speed formula is accurate to $0.2\%$ wherever the front spans three sites or more and to $1.2\%$ down to two, degrading quickly below that as the lattice stops resolving the profile the formula integrates over. Narrow the front further and the wave stops outright: between $\kappa = 0.30$ and $0.34$, at widths of $0.77$ and $0.82$ spacings, Peierls–Nabarro pinning arrests it. Weakening the *drive* never does this at canonical coupling — the barrier is what moves, not the supply.
+**§3.2 — Front width is the gate.** The coupling reaches the wave only through $\kappa = \eta\theta$, which sets the front width $w = \sqrt{2\kappa}$ in lattice spacings. The energy-balance speed formula is accurate to $0.2\%$ wherever the front spans three sites or more and to $1.2\%$ down to two, degrading quickly below that as the lattice stops resolving the profile the formula integrates over. Narrow the front further and the wave stops outright: between $\kappa = 0.30$ and $0.34$, at widths of $0.77$ and $0.82$ spacings, Peierls–Nabarro pinning arrests it. Weakening the *drive* never does this at canonical coupling — the barrier is what moves, not the supply. Damping is the only other axis on which the formula fails: it is within $10\%$ for $\Omega \gtrsim 0.13$ and flat at $1.001$ above $\Omega = 0.3$, rising to $1.83$ at $\Omega = 0.03$.
 
 **§3.3 — Compression and rarefaction differ, and that is the fluid's signature.** A wave that squeezes the pockets runs faster than its mirror image that stretches them: $2.7\%$ at $\theta = 0.1$, $11.3\%$ at $\theta = 0.4$, $215\%$ at $\theta = 4$, with no plateau. Under spring coupling the gap is identically zero. It ends where the stretching wave pins, between $\theta = 7.5$ and $7.75$, with its front $0.80$ spacings across — the same width the coupling sweep arrests at. The fingerprint and the pinning threshold are one mechanism seen along two axes.
 
@@ -79,6 +79,8 @@ and the gas force factorises exactly into a linear spring of stiffness $\kappa =
 | 1.0 | 0.009 | 0.05 | 0.7972 | 1.1478 | 1.44 |
 | 0.5 | 0.009 | 0.02 | 0.4655 | 1.2096 | 2.60 |
 | 2.0 | 0.009 | 0.02 | 0.3052 | 9.0168 | 29.55 |
+
+These use the notebook's shorter sweep settings, $N = 120$ and $T = 150$, so the first row is $0.2208$ where §3.4 quotes $0.2206$ for the same $(A, \delta, \alpha)$ at the protocol point's $N = 200$, $T = 400$. The report's value is the converged one.
 
 In groups these six span $\Omega = 0.067$ to $0.333$ and $\Pi = 0.037$ to $0.333$. The rows where the ratio holds are the well-damped ones; the three that degrade are at $\Omega \le 0.167$ and strong drive, which is the low-damping corner §3.2 identifies. Front width is not what fails here — the worst row has the widest front of the six. Full results in [`results/wave_speed_sweep.csv`](results/wave_speed_sweep.csv).
 
@@ -113,11 +115,21 @@ Earlier versions of this README reported that post-snap ringing accounts for ~34
 
 ## References
 
-1. N. Nadkarni, A. F. Arrieta, C. Chong, D. M. Kochmann, C. Daraio. *Unidirectional transition waves in bistable lattices.* Physical Review Letters, 116(24):244501, 2016.
-2. M. Hwang, A. F. Arrieta. *Input-independent energy harvesting in bistable lattices from transition waves.* Scientific Reports, 8:3630, 2018.
-3. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *Multistable metafluid based energy harvesting and storage.* Advanced Materials, 35:2301483, 2023.
-4. J. R. Raney, N. Nadkarni, C. Daraio, D. M. Kochmann, J. A. Lewis, K. Bertoldi. *Stable propagation of mechanical signals in soft media using stored elastic energy.* PNAS, 113(35):9722–9727, 2016.
-5. G. Puglisi, L. Truskinovsky. *Mechanics of a discrete chain with bi-stable elements.* Journal of the Mechanics and Physics of Solids, 48(1):1–27, 2000.
+The report's bibliography, in the same order.
+
+1. E. Ben-Abu et al. *Magnetic control of metafluids for fluid-like applications of metamaterials.* Materials Today Physics, 59:101927, 2025. [doi](https://doi.org/10.1016/j.mtphys.2025.101927)
+2. A. Djellouli, B. Van Raemdonck, Y. Wang, Y. Yang, A. Caillaud, D. Weitz, S. Rubinstein, B. Gorissen, K. Bertoldi. *Shell buckling for programmable metafluids.* Nature, 628:545–550, 2024. [doi](https://doi.org/10.1038/s41586-024-07163-z)
+3. O. Duncan, M. A. Dias, A. Alderson, et al. *Roadmap on mechanical metamaterials.* Smart Materials and Structures, 2026 (in press). [doi](https://doi.org/10.1088/1361-665X/ae9c0d)
+4. C. R. Harris, K. J. Millman, S. J. van der Walt, et al. *Array programming with NumPy.* Nature, 585:357–362, 2020. [doi](https://doi.org/10.1038/s41586-020-2649-2)
+5. M. Hwang, A. F. Arrieta. *Input-independent energy harvesting in bistable lattices from transition waves.* Scientific Reports, 8:3630, 2018. [doi](https://doi.org/10.1038/s41598-018-22003-7)
+6. W. Jiao et al. *Phase transitions in 2D multistable mechanical metamaterials via collisions of soliton-like pulses.* Nature Communications, 15(1):333, 2024. [doi](https://doi.org/10.1038/s41467-023-44293-w)
+7. N. Nadkarni, C. Daraio, D. M. Kochmann. *Dynamics of periodic mechanical structures containing bistable elastic elements: from elastic to solitary wave propagation.* Physical Review E, 90(2):023204, 2014. [doi](https://doi.org/10.1103/PhysRevE.90.023204)
+8. N. Nadkarni, A. F. Arrieta, C. Chong, D. M. Kochmann, C. Daraio. *Unidirectional transition waves in bistable lattices.* Physical Review Letters, 116(24):244501, 2016. [doi](https://doi.org/10.1103/PhysRevLett.116.244501)
+9. O. Peretz, E. Ben Abu, A. Zigelman, S. Givli, A. D. Gat. *Multistable metafluid based energy harvesting and storage.* Advanced Materials, 35:2301483, 2023.
+10. G. Puglisi, L. Truskinovsky. *Mechanics of a discrete chain with bi-stable elements.* Journal of the Mechanics and Physics of Solids, 48(1):1–27, 2000. [doi](https://doi.org/10.1016/S0022-5096(99)00006-X)
+11. J. R. Raney et al. *Stable propagation of mechanical signals in soft media using stored elastic energy.* PNAS, 113(35):9722–9727, 2016. [doi](https://doi.org/10.1073/pnas.1604838113)
+12. L. I. Slepyan. *Models and Phenomena in Fracture Mechanics.* Springer, Berlin, 2002. [doi](https://doi.org/10.1007/978-3-540-48010-5)
+13. L. Truskinovsky, A. Vainchtein. *Kinetics of martensitic phase transitions: lattice model.* SIAM Journal on Applied Mathematics, 66(2):533–553, 2005. [doi](https://doi.org/10.1137/040616942)
 
 ## License
 

@@ -24,14 +24,25 @@ These are the two things a space-time diagram cannot show, which is why the repo
 
 ## Getting started
 
+Check the headline result. Needs `numpy` and nothing else, and takes about a minute:
+
 ```bash
 git clone https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model
 cd 1D_Diaghphragms_Fluid_Model
+pip install "numpy==2.3.4"
+python3 scripts/reproduce.py
+```
+
+It runs one simulation at the protocol point, compares it against the recorded reference, and exits non-zero if they disagree. Deliberately no Jupyter, pandas or matplotlib, so a broken notebook install cannot make a reproduced result look like a failed one.
+
+For the notebooks, the figures and the ensembles:
+
+```bash
 pip install -r requirements.txt
 jupyter notebook dimensionless_model.ipynb
 ```
 
-Every expensive sweep is cached as a CSV in `results/`, so the notebooks run top to bottom in minutes rather than recomputing. Set `FORCE_RERUN = True` in a notebook's setup cell to recompute instead. Reproducing the headline number needs `numpy` alone.
+Every expensive sweep is cached as a CSV in `results/`, so the notebooks run top to bottom in minutes rather than recomputing. Set `FORCE_RERUN = True` in a notebook's setup cell to recompute instead.
 
 `requirements.txt` pins the exact versions the reported results were produced with, on Python 3.14. On an older Python, or if `pip` cannot resolve a pin, change the `==` to `>=` — nothing here depends on a specific version. Note that a regenerated ensemble may then differ sample for sample, since NumPy does not guarantee its seeded stream across major versions; the committed CSVs are the exact ensembles the reported numbers came from, which is why they ship rather than being recomputed.
 
@@ -51,11 +62,11 @@ and the gas force factorises exactly into a linear spring of stiffness $\kappa =
 
 **§3.1 — The four-group reduction is exact.** Two systems built with deliberately unlike dimensional parameters but matched groups, integrated alongside the dimensionless equation itself, agree to $1.0\times10^{-14}$ in the maximum norm over the whole run. That is integrator round-off at double precision, not a modelling residual.
 
-**§3.2 — Front width is the gate.** The coupling reaches the wave only through $\kappa = \eta\theta$, which sets the front width $w = \sqrt{2\kappa}$ in lattice spacings. The energy-balance speed formula is accurate to $0.2\%$ wherever the front spans three sites or more and to $1.2\%$ down to two, degrading quickly below that as the lattice stops resolving the profile the formula integrates over. Narrow the front further and the wave stops outright: between $\kappa = 0.30$ and $0.34$, at widths of $0.78$ and $0.83$ spacings, Peierls–Nabarro pinning arrests it. Weakening the *drive* never does this at canonical coupling — the barrier is what moves, not the supply.
+**§3.2 — Front width is the gate.** The coupling reaches the wave only through $\kappa = \eta\theta$, which sets the front width $w = \sqrt{2\kappa}$ in lattice spacings. The energy-balance speed formula is accurate to $0.2\%$ wherever the front spans three sites or more and to $1.2\%$ down to two, degrading quickly below that as the lattice stops resolving the profile the formula integrates over. Narrow the front further and the wave stops outright: between $\kappa = 0.30$ and $0.34$, at widths of $0.77$ and $0.82$ spacings, Peierls–Nabarro pinning arrests it. Weakening the *drive* never does this at canonical coupling — the barrier is what moves, not the supply.
 
 **§3.3 — Compression and rarefaction differ, and that is the fluid's signature.** A wave that squeezes the pockets runs faster than its mirror image that stretches them: $2.7\%$ at $\theta = 0.1$, $11.3\%$ at $\theta = 0.4$, $215\%$ at $\theta = 4$, with no plateau. Under spring coupling the gap is identically zero. It ends where the stretching wave pins, between $\theta = 7.5$ and $7.75$, with its front $0.80$ spacings across — the same width the coupling sweep arrests at. The fingerprint and the pinning threshold are one mechanism seen along two axes.
 
-**§3.4 — How well the speed is known.** At the protocol point, $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0219$ (parametric). The parametric band is a $9.9\%$ spread from $\pm10\%$ manufacturing tolerances on $\delta$, $A$ and $\alpha$, which lands close to the input tolerance because the closed form reduces to $v \propto \delta A/\alpha$, each to the first power. Dividing that dependence out collapses the spread to $0.45\%$. Per-diaphragm disorder is a separate and much smaller effect: it self-averages over the many sites a front spans, contributing about an eleventh of what the same tolerance does when it displaces the whole chain.
+**§3.4 — How well the speed is known.** At the protocol point, $v = 0.2206 \pm 0.0001$ (numerical) $\pm 0.0219$ (parametric). The parametric band is a $9.9\%$ spread from $\pm10\%$ manufacturing tolerances on $\delta$, $A$ and $\alpha$, which lands close to the input tolerance because the closed form reduces to $v \propto \delta A/\alpha$, each to the first power. Dividing that dependence out collapses the spread to $0.45\%$. Per-diaphragm disorder is a separate and much smaller effect. A scatter in $\delta$ passes into $v$ one for one, but the front averages it over the ~70 sites it crosses while its speed is measured, so the realisations sit inside a $\pm\sigma/\sqrt{70}$ band with nothing fitted to them.
 
 <details>
 <summary>Wave-speed sweep — 6 of 45 combinations</summary>
@@ -89,7 +100,7 @@ The simulator lives in `src/` and is shared by the notebooks and by the sweep sc
 ├── uq_reproducible_result.ipynb   # reproducible result, tolerance ensemble, disorder
 ├── diaphragm_metafluid.ipynb      # dimensional groundwork
 ├── src/                           # shared simulator, gradient stencil, plotting style
-├── scripts/                       # ensemble and sweep generators
+├── scripts/                       # ensemble and sweep generators, and the reproducible-result check
 ├── figures/                       # plots, animations, and the sources for those no notebook makes
 ├── results/                       # cached sweep outputs (CSV, with metadata headers)
 ├── paper/                         # report appendices and bibliography

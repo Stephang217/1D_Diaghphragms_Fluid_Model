@@ -1,6 +1,6 @@
 # 1D Bistable Diaphragm Metafluid
 
-![Python](https://img.shields.io/badge/python-3.14-blue.svg)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Jupyter](https://img.shields.io/badge/Jupyter-notebook-orange.svg)
 
@@ -24,7 +24,7 @@ These are the two things a space-time diagram cannot show, which is why the repo
 
 ## Getting started
 
-Check the headline result. Needs `numpy` and nothing else, and takes about a minute:
+Check the headline result. Needs Python 3.11 or newer plus `numpy`, and takes about a minute:
 
 ```bash
 git clone https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model
@@ -44,7 +44,7 @@ jupyter notebook dimensionless_model.ipynb
 
 Every expensive sweep is cached as a CSV in `results/`, so the notebooks run top to bottom in minutes rather than recomputing. Set `FORCE_RERUN = True` in a notebook's setup cell to recompute instead.
 
-`requirements.txt` pins the exact versions the reported results were produced with, on Python 3.14. On an older Python, or if `pip` cannot resolve a pin, change the `==` to `>=` — nothing here depends on a specific version. Note that a regenerated ensemble may then differ sample for sample, since NumPy does not guarantee its seeded stream across major versions; the committed CSVs are the exact ensembles the reported numbers came from, which is why they ship rather than being recomputed.
+`requirements.txt` pins the exact versions the reported results were produced with, on Python 3.14.7. The pinned `numpy` installs on 3.11 or newer. On an older Python, or if `pip` cannot resolve a pin, change the `==` to `>=` — nothing here depends on a specific version. Note that a regenerated ensemble may then differ sample for sample, since NumPy does not guarantee its seeded stream across major versions; the committed CSVs are the exact ensembles the reported numbers came from, which is why they ship rather than being recomputed.
 
 ## The model
 

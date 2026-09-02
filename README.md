@@ -24,18 +24,21 @@ These are the two things a space-time diagram cannot show, which is why the repo
 
 ## Getting started
 
-Check the headline result. Needs Python 3.11 or newer plus `numpy`, and takes about a minute:
+Check the headline result. Needs [Python](https://www.python.org/downloads/) 3.11 or newer plus `numpy`, and takes about a minute:
 
 ```bash
 git clone https://github.com/Stephang217/1D_Diaghphragms_Fluid_Model
 cd 1D_Diaghphragms_Fluid_Model
+python3 -m venv .venv && source .venv/bin/activate
 pip install "numpy==2.3.4"
 python3 scripts/reproduce.py
 ```
 
+On Windows the activate line is `.venv\Scripts\activate`. The virtual environment is not optional on Debian, Ubuntu or Homebrew Pythons, which refuse `pip install` outside one with `error: externally-managed-environment`.
+
 It runs one simulation at the protocol point, compares it against the recorded reference, and exits non-zero if they disagree. Deliberately no Jupyter, pandas or matplotlib, so a broken notebook install cannot make a reproduced result look like a failed one.
 
-For the notebooks, the figures and the ensembles:
+For the notebooks, the figures and the ensembles, in the same environment:
 
 ```bash
 pip install -r requirements.txt

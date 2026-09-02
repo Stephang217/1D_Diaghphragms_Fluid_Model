@@ -8,7 +8,7 @@ Transition waves in a chain of bistable diaphragms coupled by compressible gas p
 
 This is the code behind ***Transition Waves in a Fluid-Coupled Bistable Diaphragm Metafluid*** (S. Gambart, PX915 individual project, HetSys CDT, University of Warwick). Every figure and number in that report is produced here. The sections below follow the report's results, §3.1 to §3.4, so a claim in the paper can be traced to the notebook that produced it.
 
-The reproducible-result protocol — the reference wave speed and the tolerance to check it against — is submitted separately.
+The reproducible-result protocol — the reference wave speed and the tolerance to check it against — is submitted separately. [`scripts/reproduce.py`](scripts/reproduce.py) is what runs that check here, and it needs `numpy` alone. The three notebooks are the analysis behind the report rather than the check.
 
 ## The wave
 
@@ -94,7 +94,7 @@ In groups these six span $\Omega = 0.067$ to $0.333$ and $\Pi = 0.037$ to $0.333
 | [`uq_reproducible_result.ipynb`](uq_reproducible_result.ipynb) | §3.4: the protocol point, the tolerance ensemble and the per-diaphragm disorder study |
 | [`diaphragm_metafluid.ipynb`](diaphragm_metafluid.ipynb) | the dimensional groundwork the above is built on — the raw $A$, $\delta$, $\alpha$ sweeps, the energy audit and the ringing physics. Produces no report figure. |
 
-The simulator lives in `src/` and is shared by the notebooks and by the sweep scripts in `scripts/`, so every number comes from one implementation. The full derivation of the discrete model is in [`docs/`](docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf).
+The simulator lives in `src/` and is shared by the notebooks, by the sweep scripts in `scripts/` and by [`scripts/reproduce.py`](scripts/reproduce.py), so every number comes from one implementation. The full derivation of the discrete model is in [`docs/`](docs/Derivation_of_discrete_model_to_continuum_wave_speed.pdf).
 
 ```
 .

@@ -8,7 +8,7 @@ Transition waves in a chain of bistable diaphragms coupled by compressible gas p
 
 This is the code behind ***Transition Waves in a Fluid-Coupled Bistable Diaphragm Metafluid*** (S. Gambart, PX915 individual project, HetSys CDT, University of Warwick). Every figure and number in that report is produced here. The sections below follow the report's results, §3.1 to §3.4, so a claim in the paper can be traced to the notebook that produced it.
 
-The reproducible-result protocol — the reference wave speed and the tolerance to check it against — is submitted separately. [`scripts/reproduce.py`](scripts/reproduce.py) is what runs that check here, and it needs `numpy` alone. The three notebooks are the analysis behind the report rather than the check.
+The reproducible-result protocol — the reference wave speed, the tolerance to check it against, and the equations, method and measurement procedure behind them — is Appendix C of the report. [`scripts/reproduce.py`](scripts/reproduce.py) runs that check here, and it needs `numpy` alone. The three notebooks are the analysis behind the report rather than the check.
 
 ## The wave
 
